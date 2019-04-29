@@ -93,6 +93,8 @@ add_service_files(
   StbyActionService.srv
   PausedStActionService.srv
   StopService.srv
+  UavListService.srv
+  StartMission.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -186,7 +188,7 @@ include_directories(
 )
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-    src/main.cpp src/get_from_json.cpp src/mission_builder.cpp src/QGCGeo.cc src/UTM.cpp
+    src/main.cpp src/get_from_json.cpp src/mission_builder.cpp src/rostful_services.cpp src/QGCGeo.cc src/UTM.cpp
     # src/get_from_json.cpp src/mission_builder.cpp src/QGCGeo.cc src/UTM.cpp
     ${inspector_gcs_SRCS}
     ${inspector_gcs_MOCS}

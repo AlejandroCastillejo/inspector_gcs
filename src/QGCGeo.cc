@@ -11,6 +11,8 @@
 
 #include <cmath>
 #include <limits>
+#include <iostream>
+#include <iomanip>
 
 #include <inspector_gcs/QGCGeo.h>
 #include <inspector_gcs/UTM.h>
@@ -88,6 +90,11 @@ void convertNedToGeo(double x, double y, double z, QGeoCoordinate origin, QGeoCo
     // coord->setLongitude(lon_rad * M_RAD_TO_DEG);
     coord.setLatitude(lat_rad * M_RAD_TO_DEG);
     coord.setLongitude(lon_rad * M_RAD_TO_DEG);
+
+    double lat = lat_rad * M_RAD_TO_DEG;
+    double lon = lon_rad * M_RAD_TO_DEG;
+
+    std::cout << std::setprecision(14) << "Latitude: " << lat << "  Longitude: " << lon <<std::endl;
 
     // coord->setAltitude(-z + origin.altitude());
 }

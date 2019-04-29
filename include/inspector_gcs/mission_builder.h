@@ -2,6 +2,7 @@
 #define MISSION_BUILDER_H
 
 #include <inspector_gcs/QGCGeo.h>
+#include <json.hpp>
 
 #include <fstream>
 #include <iostream>

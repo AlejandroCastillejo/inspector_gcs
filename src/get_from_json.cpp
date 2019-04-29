@@ -7,7 +7,9 @@ bool GetFromJson::GetCoordinates(QList<QGeoCoordinate>& _PolygonCoordinates, dou
   json js = json::array({});
 
   // std::ifstream file(_qfilelocation.toStdString());
-  std::ifstream file("planta_utrera.json");
+  std::ifstream file("planta_karting.json");
+  // std::ifstream file("pista_labs.json");
+  // std::ifstream file("planta_utrera.json");
   // std::ifstream file("archivo2.json");
   file >> js;
 

@@ -19,11 +19,3 @@ int d = 6;
 std::vector<int> h_d;
 // int h_d[n];
 // int h_d[n];
-// int p*;
-// p= &h_d;
-
-
-
-
-
-
