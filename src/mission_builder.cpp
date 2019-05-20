@@ -7,8 +7,11 @@
 
 
 // void MissionsBuilder::_buildTransects(QList<QGeoCoordinate> _PolygonCoordinates, QList<QLineF>& _resultLines, QList<QList<QGeoCoordinate>>& resultTransects)
-void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCoordinate> _PolygonCoordinates, QList<QLineF>& _resultLines, QList<QList<QGeoCoordinate>>& resultTransects)
+// void MissionBuilder::_buildTransects(GetFromJson& _get_from_json, QGeoCoordinate BaseCoordinate, QList<QGeoCoordinate> _PolygonCoordinates, QList<QLineF>& _resultLines, QList<QList<QGeoCoordinate>>& resultTransects)
+void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCoordinate> _PolygonCoordinates, double _gridAngle, double _gridSpacing, QList<QLineF>& _resultLines, QList<QList<QGeoCoordinate>>& resultTransects)
 {
+    // double _gridSpacing = 15;
+
     QList<QPointF> polygonPoints;
     // QGeoCoordinate tangentOrigin = _PolygonCoordinates.pathModel().value<QGCCoordinate*>(0)->coordinate();
     QGeoCoordinate tangentOrigin = _PolygonCoordinates[0];
@@ -35,22 +38,21 @@ void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCo
     {
        std::cout << iter->x() << "    " <<iter->y() << std::endl;
     };
-       // Generate transects
 
-    nlohmann::json js = nlohmann::json::array({});
-    std::ifstream file("mission_parameters.json");
-    file >> js;
-    std::cout << "\ngridAngle: " << js["gridAngle"] << std::endl;
-    std::cout << "gridSpacing: " << js["gridSpacing"] << "\n" << std::endl;
+    // Generate transects
 
-    // double gridAngle = _gridAngleFact.rawValue().toDouble();
-    // double gridAngle = 0;
-    double gridAngle = js["gridAngle"];
-    // double gridSpacing = _cameraCalc.adjustedFootprintSide()->rawValue().toDouble();
-    // double gridSpacing = 5;
-    double gridSpacing = js["gridSpacing"];
+    // nlohmann::json js = nlohmann::json::array({});
+    // std::ifstream file("mission_parameters.json");
+    // file >> js;
+    // std::cout << "\ngridAngle: " << js["gridAngle"] << std::endl;
+    // std::cout << "gridSpacing: " << js["gridSpacing"] << "\n" << std::endl;
 
-    gridAngle = _clampGridAngle90(gridAngle);
+    // double _gridAngle = js["gridAngle"];
+
+    // double _gridAngle = _get_from_json.GetFlightDirection() - 90;
+    std::cout << "\ngridAngle: " << _gridAngle << std::endl;
+    
+    _gridAngle = _clampGridAngle90(_gridAngle);
     
     QPolygonF polygon;
     for (int i=0; i<polygonPoints.count(); i++) {
@@ -88,8 +90,8 @@ void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCo
         double transectYTop = boundingCenter.y() - halfWidth;
         double transectYBottom = boundingCenter.y() + halfWidth;
 
-        lineList += QLineF(_rotatePoint(QPointF(transectX, transectYTop), boundingCenter, gridAngle), _rotatePoint(QPointF(transectX, transectYBottom), boundingCenter, gridAngle));
-        transectX += gridSpacing;
+        lineList += QLineF(_rotatePoint(QPointF(transectX, transectYTop), boundingCenter, _gridAngle), _rotatePoint(QPointF(transectX, transectYBottom), boundingCenter, _gridAngle));
+        transectX += _gridSpacing;
     }
     // qDebug() << lineList;
 
@@ -381,15 +383,15 @@ QPointF MissionBuilder::_intermediatePoint (QPointF point1, QPointF point2, doub
 }
 
 
-double MissionBuilder::_clampGridAngle90(double gridAngle)
+double MissionBuilder::_clampGridAngle90(double _gridAngle)
 {
     // Clamp grid angle to -90<->90. This prevents transects from being rotated to a reversed order.
-    if (gridAngle > 90.0) {
-        gridAngle -= 180.0;
-    } else if (gridAngle < -90.0) {
-        gridAngle += 180;
+    if (_gridAngle > 90.0) {
+        _gridAngle -= 180.0;
+    } else if (_gridAngle < -90.0) {
+        _gridAngle += 180;
     }
-    return gridAngle;
+    return _gridAngle;
 }
 
 QPointF MissionBuilder::_rotatePoint(const QPointF& point, const QPointF& origin, double angle)

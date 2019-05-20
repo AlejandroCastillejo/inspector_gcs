@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "qstring": "cpp",
+        "qjsonobject": "cpp"
+    }
+}

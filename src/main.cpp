@@ -1,16 +1,24 @@
 #include <iostream>
-#include <list>
-#include <string>
+// #include <list>
+// #include <string>
 #include <thread>
 #include <cmath>
 
-#include <ros/ros.h>
+#include <parametros.h>
+#include <inspector_gcs/get_from_json.h>
+#include <inspector_gcs/mission_builder.h>
+#include <inspector_gcs/rostful_services.h>
+#include <inspector_gcs/gcs_services.h>
+#include <inspector_gcs/camera_calc.h>
 
+#include <ros/ros.h>
 // ROS Services & Msgs
 #include <inspector_gcs/gcsCreateMission.h>
 #include <inspector_gcs/gcsSendMission.h>
 #include <inspector_gcs/MissionService.h>
 #include <uav_abstraction_layer/State.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/TwistStamped.h>
 
 #include <visualization_msgs/Marker.h>
 
@@ -18,15 +26,6 @@
 #include <QApplication>
 #include <QtDebug>
 // #include <QList>
-
-#include <parametros.h>
-#include <inspector_gcs/get_from_json.h>
-#include <inspector_gcs/mission_builder.h>
-#include <inspector_gcs/rostful_services.h>
-
-#include <geometry_msgs/PoseStamped.h>
-#include <geometry_msgs/TwistStamped.h>
-
 
 typedef uav_abstraction_layer::State ualState;
 
@@ -42,14 +41,16 @@ struct uav_state {
 std::map<std::string, uav_state> map_uav_state;
 std::map<std::string, uav_state>::iterator iter_uav;
 // UAV list
-std::vector<std::string> uav_list = {"uav_1", "uav_2", "uav_3", "uav_n"};
-// std::vector<std::string> uav_list = {"uav_1"};
+// std::vector<std::string> uav_list = {"uav_1", "uav_2", "uav_3", "uav_n"};
+std::vector<std::string> uav_list = {"uav_1"};
 // std::vector<std::string> uav_list;
 
 //Global variables
 ros::NodeHandle *p_nh;
 QGeoCoordinate BaseCoordinate;
 QList<QGeoCoordinate> PolygonCoordinates;
+double gridAngle;
+double gridSpacing;
 double h_c; //flight altitude
 
 // QList<QGeoCoordinate> WaiPoints;
@@ -57,7 +58,10 @@ QList<QLineF> resultLinesNED;
 QList<QList<QGeoCoordinate>> resultTransectsGeo;
 QList<QList<QPointF>> droneWayPointsNED;
 QList<QList<QGeoCoordinate>> droneWayPointsGeo;
-QString qfilelocation;
+// QString qfilelocation;
+std::string filelocation = "mission_file.json";
+// std::string filelocation;
+
 std::vector<nav_msgs::Path> missionPaths;
 std::vector<geographic_msgs::GeoPath> missionPathsGeo;
 void visualization(void);
@@ -79,9 +83,13 @@ bool send_mission_cb(inspector_gcs::gcsSendMission::Request &req, inspector_gcs:
 ros::Publisher path_pub;
 ros::Publisher geo_path_pub;
 
+// CameraCalc Objects
+CameraCalc rgb_camera("Sony a6000");
+CameraCalc thermal_camera("WIRIS 2nd gen");
 
-GetFromJson g_Json;
-MissionBuilder mb;
+// filelocation = "~/catkin_ws/mission_file.json";
+GetFromJson get_from_json(filelocation);
+MissionBuilder mission_builder;
 
 int main(int argc, char** argv) 
 {
@@ -89,8 +97,10 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
   p_nh = &nh; //pointer to nh
 
-  RostfulServices rostful(nh, uav_list);
+  // nh.param<std::string>("mission_file_location", filelocation);
 
+  RostfulServices rostful_services(nh, uav_list);
+  GcsServices gcs_services(nh, uav_list);
 
   // print list of UAVs
   std::cout << "list of UAVs:" << std::endl;
@@ -137,8 +147,6 @@ int main(int argc, char** argv)
   geo_path_pub = nh.advertise<geographic_msgs::GeoPath>("geo_path", 100);
  
   while(ros::ok()){
-
-
   // visualization();
     ros::spinOnce();
   }
@@ -168,7 +176,9 @@ void mainThread() {
 bool create_mission_cb(inspector_gcs::gcsCreateMission::Request &req, inspector_gcs::gcsCreateMission::Response &res) {
   ROS_INFO("Creating mission");
   // GET PERIMETER & PARAMETERS FROM JSON FILE
-  g_Json.GetCoordinates(PolygonCoordinates, h_c, qfilelocation);  
+  get_from_json.GetCoordinates(PolygonCoordinates);
+  gridAngle = get_from_json.GetFlightDirection() - 90;
+  h_c = get_from_json.GetFlightAltitude();
   //
   // Test
     std::cout << "\nFlight height: " << h_c << std::endl;
@@ -180,12 +190,23 @@ bool create_mission_cb(inspector_gcs::gcsCreateMission::Request &req, inspector_
        std::cout << iter->latitude() << "    " <<iter->longitude() << std::endl;
     };
 
-  BaseCoordinate = QGeoCoordinate{37.558632, -5.931218};
+  BaseCoordinate = QGeoCoordinate{37.09098, -5.8722};
+
+  std::cout << "rgb_camera horizontalFOV: " << rgb_camera.horizontalFOV(h_c) << std::endl;
+  
+  // OBTAIN gidSpacing
+  double min_verticalFOV = std::min(rgb_camera.verticalFOV(h_c), thermal_camera.verticalFOV(h_c) );
+  std::cout << "min verticalFOV: "<< min_verticalFOV << std::endl;
+  double transv_overlap_ideal = get_from_json.GetTransverseOverlapIdeal();
+  std::cout << "ideal transverse overlap: "<< transv_overlap_ideal << std::endl;
+  gridSpacing = min_verticalFOV * (1.0 - transv_overlap_ideal);
+  std::cout << "gridSpacing: "<< gridSpacing << std::endl;
 
   //
   // OBTAIN MISSION WAYPOINTS
-  mb._buildTransects(BaseCoordinate, PolygonCoordinates, resultLinesNED, resultTransectsGeo);
-  mb._buildMission(n, resultLinesNED, droneWayPointsNED);
+  mission_builder._buildTransects(BaseCoordinate, PolygonCoordinates, gridAngle, gridSpacing, resultLinesNED, resultTransectsGeo);
+  // mission_builder._buildTransects(get_from_json, BaseCoordinate, PolygonCoordinates, resultLinesNED, resultTransectsGeo);
+  mission_builder._buildMission(n, resultLinesNED, droneWayPointsNED);
   // qDebug() << "drone waypoints" << droneWayPointsNED;
 
   // CONVERT WAYPOINTS TO GEOCOORDINATES
@@ -211,11 +232,11 @@ bool create_mission_cb(inspector_gcs::gcsCreateMission::Request &req, inspector_
     qDebug() << "drone"<< i << "WayPoints Geo\n" << droneWayPointsGeo << endl;
   }
   // OBTAIN SAFE POSITIONING HEIGHTs
-  mb._heightDistribution(n, h_d, h_c, h_min, d);
+  mission_builder._heightDistribution(n, h_d, h_c, h_min, d);
 
   //CREATE MISSION MESSAGES
-  missionPaths = mb._createMissionPaths(droneWayPointsNED, h_d, h_c);
-  missionPathsGeo = mb._createMissionPathsGeo(droneWayPointsGeo, h_d, h_c);
+  missionPaths = mission_builder._createMissionPaths(droneWayPointsNED, h_d, h_c);
+  missionPathsGeo = mission_builder._createMissionPathsGeo(droneWayPointsGeo, h_d, h_c);
   
   qDebug()<<endl;
   qDebug()<< "drone waypoints geo" << endl << droneWayPointsGeo << endl;
@@ -240,12 +261,21 @@ bool send_mission_cb(inspector_gcs::gcsSendMission::Request &req, inspector_gcs:
   }
   ROS_INFO("Sending mission");
 
-  // ros::NodeHandle nh;
   // GENERATE MISSIONS SERVICES
   n = uav_list.size();
   ros::ServiceClient mission_client[n];
   inspector_gcs::MissionService mission_srv[n];
-  // std::string mission_service_i[n];
+  //
+  // GET FLIGHT ANGLE
+  double flight_angle = get_from_json.GetFlightDirection();
+  //
+  // CALCULATE SHOOTING DISTANCE
+  double thermal_camera_horizontalFOV = thermal_camera.horizontalFOV(h_c);
+  double rgb_camera_horizontalFOV = rgb_camera.horizontalFOV(h_c);
+  double ideal_long_overlap = get_from_json.GetLongitudinalOverlapIdeal();
+  double thermal_camera_shoot_dist = thermal_camera_horizontalFOV * (1.0 - ideal_long_overlap);
+  double rgb_camera_shoot_dist = rgb_camera_horizontalFOV * (1.0 - ideal_long_overlap);
+  //
 
   for (int i=0; i<n; i++) {
       // ros::ServiceClient client = nh.serviceClient<inspector_gcs::MissionService>("mission_service_%d", i);
@@ -254,6 +284,9 @@ bool send_mission_cb(inspector_gcs::gcsSendMission::Request &req, inspector_gcs:
       mission_client[i] = p_nh->serviceClient<inspector_gcs::MissionService>(uav_list[i] + "/mission_service");
 
       mission_srv[i].request.h_d = h_d[i];
+      mission_srv[i].request.flight_angle = flight_angle;
+      mission_srv[i].request.thermal_camera_shooting_distance = thermal_camera_shoot_dist;
+      mission_srv[i].request.rgb_camera_shooting_distance = rgb_camera_shoot_dist;
       // mission_srv[i].request.MissionPath = missionPaths[i];
       mission_srv[i].request.MissionPath = missionPathsGeo[i];
       if (mission_client[i].call(mission_srv[i])) {

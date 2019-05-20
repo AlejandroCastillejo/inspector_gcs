@@ -3,6 +3,8 @@
 
 #include <inspector_gcs/QGCGeo.h>
 #include <json.hpp>
+#include <inspector_gcs/get_from_json.h>
+
 
 #include <fstream>
 #include <iostream>
@@ -15,12 +17,11 @@
 #include <geographic_msgs/GeoPath.h>
 
 
-
-
 class MissionBuilder {
     public:
 
-        void _buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCoordinate> _PolygonCoordinates, QList<QLineF>& resultLines, QList<QList<QGeoCoordinate>>& resultTransects);
+        // void _buildTransects(GetFromJson& _get_from_json, QGeoCoordinate BaseCoordinate, QList<QGeoCoordinate> _PolygonCoordinates, QList<QLineF>& resultLines, QList<QList<QGeoCoordinate>>& resultTransects);
+        void _buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCoordinate> _PolygonCoordinates, double _gridAngle, double _gridSpacing, QList<QLineF>& resultLines, QList<QList<QGeoCoordinate>>& resultTransects);
         void _buildMission(int nDrones, QList<QLineF>& resultLines, QList<QList<QPointF>>& droneWayPoints);
         void _heightDistribution(int nDrones, std::vector<int>& h_d, int h_mission, int h_minima, int d_seg);
         std::vector<nav_msgs::Path> _createMissionPaths(QList<QList<QPointF>> droneWayPoints, std::vector<int> h_posic, int h_barrido);

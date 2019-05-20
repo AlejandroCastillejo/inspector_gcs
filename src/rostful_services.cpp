@@ -16,11 +16,13 @@ RostfulServices::RostfulServices(ros::NodeHandle &_nh, std::vector<std::string> 
     // uav_list_server = nh.advertiseService("uav_list", uav_list_server_cb);
      uav_list_server = _nh.advertiseService("uav_list", &RostfulServices::uav_list_server_cb, this);
      start_mission_server = _nh.advertiseService("start_mission", &RostfulServices::start_mission_server_cb, this);
+     stop_mission_server = _nh.advertiseService("stop_mission", &RostfulServices::stop_mission_server_cb, this);
+     resume_mission_server = _nh.advertiseService("resume_mission", &RostfulServices::resume_mission_server_cb, this);
 
 
 }
 
-bool RostfulServices::uav_list_server_cb(inspector_gcs::UavListService::Request &req, inspector_gcs::UavListService::Response &res)
+bool RostfulServices::uav_list_server_cb(inspector_gcs::API_UavList::Request &req, inspector_gcs::API_UavList::Response &res)
 {   
     std::vector<std::string> uav_list = *_uav_list_ptr;
     for (int i=0; i<uav_list.size(); i++) {
@@ -32,11 +34,22 @@ bool RostfulServices::uav_list_server_cb(inspector_gcs::UavListService::Request 
     return true;
 }
 
-bool RostfulServices::start_mission_server_cb(inspector_gcs::StartMission::Request &req, inspector_gcs::StartMission::Response &res) 
+bool RostfulServices::start_mission_server_cb(inspector_gcs::API_MissionCommand::Request &req, inspector_gcs::API_MissionCommand::Response &res) 
 {
     std::cout << req.uav << std::endl;
     return true;
 }
 
+bool RostfulServices::stop_mission_server_cb(inspector_gcs::API_MissionCommand::Request &req, inspector_gcs::API_MissionCommand::Response &res) 
+{
+    std::cout << req.uav << std::endl;
+    return true;
+}
+
+bool RostfulServices::resume_mission_server_cb(inspector_gcs::API_MissionCommand::Request &req, inspector_gcs::API_MissionCommand::Response &res) 
+{
+    std::cout << req.uav << std::endl;
+    return true;
+}
 
 // RostfulServices rost, rost1;
