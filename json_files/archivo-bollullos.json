@@ -1,0 +1,60 @@
+{
+  "plant":"Bollullos",
+  "perimeter": [
+    {
+      "latitude": 37.356571,
+      "longitude": -6.126776
+    },
+    {
+      "latitude": 37.357145,
+      "longitude": -6.126677
+    },
+    {
+      "latitude": 37.357155,
+      "longitude": -6.126382
+    },
+    {
+      "latitude": 37.356690,
+      "longitude": -6.126472
+    }
+  ],
+  "flight characteristics": {
+	"take off": {
+      "latitude": 43.520345,
+      "longitude": -5.607823
+    },
+	"landing": {
+      "latitude": 43.520345,
+      "longitude": -5.607823
+    },
+	"flight direction": 90,
+    "flight altitude": 30,
+    "longitudinal overlap (minimum)": 0.6,
+    "longitudinal overlap (ideal)": 0.8,
+    "transverse  overlap (minimum)": 0.3,
+    "transverse  overlap (ideal)": 0.6,
+    "verticality": 3,
+    "drift": 3,
+    "height variation over terrain": 3
+  },
+  "devices": [
+    {
+      "model": "Camara termografica Workswell WIRIS 2nd gen",
+      "variables_to_read": [
+        {
+          "uuid": "36afdfdb-d35c-476b-8090-57edab8fa7a0",
+          "name": "Imagen termografica"
+        }
+      ]
+    },
+    {
+      "model": "Camara RGB Sony A6000​",
+      "variables_to_read": [
+        {
+          "uuid": "8ef93c78-f716-46da-9186-52731bee5761",
+          "name": "Imagen RGB"
+        }
+      ]
+    }
+  ]
+}

@@ -15,29 +15,33 @@ class SqlManager:
         self.desktop = os.path.expanduser("~/Desktop")
 
         # Files path
-        self.telemetry_file = self.desktop + '/mission_bags/webcam.csv/georefenencedImages.csv'
+        # self.telemetry_file = self.desktop + '/mission_bags/webcam.csv/georefenencedImages.csv'
+        self.telemetry_file = self.desktop + '/georefenenced_rgb_images_2019-06-13.csv'
 
         db = sqlite3.connect('example.db')
 
         c = db.cursor()
 
         # SQL CREATION SENSOR ENTRIES:
-        c.execute("CREATE TABLE IF NOT EXISTS sensor_entries (id INTEGER, uuid TEXT NOT NULL, timestamp REAL NOT NULL, value REAL NOT NULL, PRIMARY KEY (id))")
+        # c.execute("CREATE TABLE IF NOT EXISTS sensor_entries (id INTEGER, uuid TEXT NOT NULL, timestamp REAL NOT NULL, value REAL NOT NULL, PRIMARY KEY (id))")
 
         # SQL CREATION LAST SENSOR ENTRIES:
-        c.execute("CREATE TABLE IF NOT EXISTS last_sensor_entries (uuid TEXT NOT NULL, timestamp REAL NOT NULL, value REAL NOT NULL, PRIMARY KEY (uuid));")
+        # c.execute("CREATE TABLE IF NOT EXISTS last_sensor_entries (uuid TEXT NOT NULL, timestamp REAL NOT NULL, value REAL NOT NULL, PRIMARY KEY (uuid));")
 
         # SQL CREATION TELEMETRY ENTRIES:
         c.execute('''
-        CREATE TABLE IF NOT EXISTS telemetry_entries (id INTEGER, uuid TEXT NOT NULL, timestamp REAL NOT NULL, 
+        CREATE TABLE IF NOT EXISTS telemetry_entries (id INTEGER, latitude REAL NOT NULL, longitude REAL NOT NULL, altitude REAL NOT NULL, PRIMARY KEY (id))
+        ''')
+        c.execute('''
+        CREATE TABLE IF NOT EXISTS geotaged_images (id INTEGER, uuid TEXT NOT NULL, timestamp REAL NOT NULL, 
         image_file REAL NOT NULL, latitude REAL NOT NULL, longitude REAL NOT NULL, altitude REAL NOT NULL, PRIMARY KEY (id))
         ''')
 
         # SQL TRIGGER:
-        c.execute('''
-        CREATE TRIGGER IF NOT EXISTS delete_tail AFTER INSERT ON sensor_entries 
-        BEGIN DELETE FROM sensor_entries WHERE (id % 10000000 = NEW.id % 10000000) AND (id != NEW.id); END;
-        ''')
+        # c.execute('''
+        # CREATE TRIGGER IF NOT EXISTS delete_tail AFTER INSERT ON sensor_entries 
+        # BEGIN DELETE FROM sensor_entries WHERE (id % 10000000 = NEW.id % 10000000) AND (id != NEW.id); END;
+        # ''')
 
         # SQL INSERT SENSOR ENTRIES:
         # uuid1 = uuid.uuid1()
@@ -45,7 +49,7 @@ class SqlManager:
         # print('uuid int: ', str(uuid1))
         # c.execute("INSERT INTO sensor_entries(uuid,timestamp,value) VALUES(?,?,?)",(str(uuid1), 51516, 51515))
         # # c.execute("INSERT INTO sensor_entries(uuid,timestamp,value) VALUES(21,23151,51516)")
-        # db.commit()
+        db.commit()
 
         # SQL INSERT LAST SENSOR ENTRIES:
         # c.execute("INSERT INTO last_sensor_entries(uuid,timestamp,value) VALUES(?,?,?)",(str(uuid1), 564, 644))
@@ -61,8 +65,14 @@ class SqlManager:
                 else:
                     # print(row)
                     c.execute(''' 
-                    INSERT INTO telemetry_entries(uuid, timestamp, image_file, latitude, longitude, altitude) VALUES(?,?,?,?,?,?) ''',
-                    (str(uuid.uuid1()), row[1], row[5], row[6], row[7], row[8]) )
+                    INSERT INTO telemetry_entries(latitude, longitude, altitude) VALUES(?,?,?) ''', 
+                    (row[2], row[3], row[4]) )
+                    # c.execute(''' 
+                    # INSERT INTO geotaged_images(uuid, timestamp, image_file, latitude, longitude, altitude) VALUES(?,?,?,?,?,?) ''',
+                    # (str(uuid.uuid1()), row[1], row[0], row[2], row[3], row[4]) )
+                    c.execute(''' 
+                    INSERT INTO geotaged_images(uuid, timestamp, image_file, latitude, longitude, altitude) VALUES(?,?,?,?,?,?) ''',
+                    (str(uuid.uuid1()), row[1], row[0], row[2], row[3], row[4]) )
             db.commit()
             
 

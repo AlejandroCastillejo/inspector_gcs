@@ -1,0 +1,24 @@
+{
+    "cameras": {
+            "Sony a6000":{
+                "horizontalAOV": 52.2,
+                "verticalAOV": 82.1
+            },
+            "WIRIS 2nd gen":{
+                "horizontalAOV": 56,
+                "verticalAOV": 69
+            },
+            "WIRIS 2nd gen long.":{
+                "horizontalAOV": 69,
+                "verticalAOV": 56
+            },
+            "Sony a6000 16:9":{
+                "horizontalAOV": 82.1,
+                "verticalAOV": 52.2
+            },
+            "Sony a6000 4:3":{
+                "horizontalAOV": 77.3,
+                "verticalAOV": 61.9
+            }
+    }
+}

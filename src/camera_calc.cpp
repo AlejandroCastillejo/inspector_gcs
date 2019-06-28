@@ -1,10 +1,16 @@
 #include <inspector_gcs/camera_calc.h>
+#include <ros/package.h>
 
 
 CameraCalc::CameraCalc(std::string _camera_name) {
-  
+
+  std::string package_path = ros::package::getPath("inspector_gcs");
+  std::string cameras_file_location = package_path + "/json_files/cameras.json";
+  // std::cout << "cameras_file_location" << cameras_file_location << std::endl;
+
   cameras_js = json::array({});
-  std::ifstream file("cameras.json");
+  // std::ifstream file("cameras.json");
+  std::ifstream file(cameras_file_location);
   file >> cameras_js;
 
     // std::cout << cameras_js["cameras"] << std::endl;

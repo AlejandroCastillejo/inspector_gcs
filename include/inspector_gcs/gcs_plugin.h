@@ -3,6 +3,7 @@
 
 // C++
 #include <string>
+#include <thread>
 // ROS
 #include <ros/ros.h>
 #include "std_msgs/Empty.h"
@@ -26,6 +27,9 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QButtonGroup>
+// #include <QComboBox>
+#include <QList>
+#include <QVector> 
 
 // #include <QLineF>
 // #include <QPolygonF>
@@ -38,6 +42,9 @@
 #include <inspector_gcs/StopService.h>
 #include <inspector_gcs/gcsCreateMission.h>
 #include <inspector_gcs/gcsSendMission.h>
+
+// Messages
+#include <inspector_gcs/UavList.h>
 
 // TEST
 #include "sensor_msgs/PointCloud2.h"
@@ -91,6 +98,7 @@ public:
   // QList<QList<QPointF>> droneWayPointsNED;
   // QList<QList<QGeoCoordinate>> droneWayPointsGeo;
   // std::vector<nav_msgs::Path> missionPaths;
+  
 
 //
   GcsPlugin();
@@ -104,10 +112,19 @@ protected slots:
 
   virtual void press_CreateMission();
   virtual void press_SendMission();
+
   virtual void press_StartMission();
   virtual void press_StopMission();
   virtual void press_ResumeMission();
   virtual void press_AbortMission();
+
+  virtual void press_StartMission_2();
+  virtual void press_StopMission_2();
+  virtual void press_ResumeMission_2();
+  virtual void press_AbortMission_2();
+
+  // virtual void on_uav_selection_Box_currentIndexChanged(const QString &arg1);
+  // virtual void on_uav_selection_Box_currentIndexChanged(int index);
 
   virtual void press_takeOff();
   virtual void press_land();
@@ -115,8 +132,18 @@ protected slots:
   virtual void press_setVelocity();
 
 protected:
+
+  // DJI_SDK 
+  virtual void gps_pos_cb(const sensor_msgs::NavSatFix);
+  // GCS
+  virtual void uav_list_cb(const inspector_gcs::UavList);
+  // virtual void uav_services_update();
+  // ADL
+  virtual void adl_state_cb(const std_msgs::String msg);
+
+
   // UAL //
-  virtual void state_callback(const std_msgs::String msg);
+  virtual void ual_state_cb(const std_msgs::String msg);
   virtual void pose_callback(const geometry_msgs::PoseStamped);
   virtual void velocity_callback(const geometry_msgs::TwistStamped);
   // UAL //
@@ -142,6 +169,13 @@ private:
   ros::NodeHandle n_;
   // cloudSignal* cloudUpdate;
 
+  // Private variables
+  QStringList uav_list;
+
+  // Thread
+  std::thread gui_thread;
+  void guiThread();
+
 
   //////////////////////////////////////////
   // Inspector GCS //
@@ -156,9 +190,18 @@ private:
   inspector_gcs::gcsCreateMission create_mission_service;
   inspector_gcs::gcsSendMission send_mission_service;
 
+  ros::Subscriber uav_list_sub;
+
   //////////////////////////////////////////
 
-  // Subscriber
+  // Subscribers
+    // DJI_SDK
+  ros::Subscriber gps_pos_sub;
+    // ADL
+  ros::Subscriber adl_state_sub;
+    // UAL
+  ros::Subscriber ual_state_sub, pose_sub, velocity_sub;
+  
   // UAL //
   ros::ServiceClient srvTakeOff, srvLand, srvGoToWaypoint, srvSetVelocity;
   uav_abstraction_layer::TakeOff take_off;
@@ -167,8 +210,7 @@ private:
   uav_abstraction_layer::SetVelocity set_velocity;
   geometry_msgs::TwistStamped vel;
   geometry_msgs::PoseStamped wp;
-  // UAL //
-  ros::Subscriber state_sub, pose_sub, velocity_sub;
+
   // ros::Publisher resolution;
   // --------------------------------------------------------------------------
 };

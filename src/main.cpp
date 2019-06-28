@@ -12,10 +12,12 @@
 #include <inspector_gcs/camera_calc.h>
 
 #include <ros/ros.h>
+#include <ros/package.h>
 // ROS Services & Msgs
 #include <inspector_gcs/gcsCreateMission.h>
 #include <inspector_gcs/gcsSendMission.h>
 #include <inspector_gcs/MissionService.h>
+#include <inspector_gcs/UavList.h>
 #include <uav_abstraction_layer/State.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
@@ -41,8 +43,9 @@ struct uav_state {
 std::map<std::string, uav_state> map_uav_state;
 std::map<std::string, uav_state>::iterator iter_uav;
 // UAV list
-// std::vector<std::string> uav_list = {"uav_1", "uav_2", "uav_3", "uav_n"};
-std::vector<std::string> uav_list = {"uav_1"};
+std::vector<std::string> uav_list = {"uav_1", "uav_2", "uav_3", "uav_n"};
+// std::vector<std::string> uav_list = {"uav_1"};
+// std::vector<std::string> uav_list = {"uav_2"};
 // std::vector<std::string> uav_list;
 
 //Global variables
@@ -58,9 +61,13 @@ QList<QLineF> resultLinesNED;
 QList<QList<QGeoCoordinate>> resultTransectsGeo;
 QList<QList<QPointF>> droneWayPointsNED;
 QList<QList<QGeoCoordinate>> droneWayPointsGeo;
-// QString qfilelocation;
-std::string filelocation = "mission_file.json";
-// std::string filelocation;
+  
+// std::string home_path = getenv("HOME");
+std::string package_path = ros::package::getPath("inspector_gcs");
+std::string mission_file_location = package_path + "/json_files/mission_file.json";
+// std::string mission_file_location = "mission_file.json";
+// std::string mission_file_location;
+
 
 std::vector<nav_msgs::Path> missionPaths;
 std::vector<geographic_msgs::GeoPath> missionPathsGeo;
@@ -80,15 +87,19 @@ bool create_mission_cb(inspector_gcs::gcsCreateMission::Request &req, inspector_
 bool send_mission_cb(inspector_gcs::gcsSendMission::Request &req, inspector_gcs::gcsSendMission::Response &res);
 
 // ROS Publishers
+ros::Publisher uav_list_pub;
 ros::Publisher path_pub;
 ros::Publisher geo_path_pub;
+
+// ROS msgs
+inspector_gcs::UavList uav_list_msg;
 
 // CameraCalc Objects
 CameraCalc rgb_camera("Sony a6000");
 CameraCalc thermal_camera("WIRIS 2nd gen");
 
-// filelocation = "~/catkin_ws/mission_file.json";
-GetFromJson get_from_json(filelocation);
+// mission_file_location = "~/catkin_ws/mission_file.json";
+GetFromJson get_from_json(mission_file_location);
 MissionBuilder mission_builder;
 
 int main(int argc, char** argv) 
@@ -97,7 +108,7 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
   p_nh = &nh; //pointer to nh
 
-  // nh.param<std::string>("mission_file_location", filelocation);
+  // nh.param<std::string>("mission_file_location", mission_file_location);
 
   RostfulServices rostful_services(nh, uav_list);
   GcsServices gcs_services(nh, uav_list);
@@ -141,6 +152,9 @@ int main(int argc, char** argv)
   ros::ServiceServer create_mission_srv = nh.advertiseService("create_mission_service", create_mission_cb);
   ros::ServiceServer send_mission_srv = nh.advertiseService("send_mission_service", send_mission_cb);
 
+  // GCS Publishers
+  uav_list_pub = nh.advertise<inspector_gcs::UavList>("uav_list", 1);
+
   main_thread = std::thread(mainThread);
 
   path_pub = nh.advertise<nav_msgs::Path>("path", 100);
@@ -166,6 +180,9 @@ void mainThread() {
     //     ROS_INFO("Connection with %s lost", iter_uav->first.c_str());
     //   }
     // }
+    // uav_list_pub = p_nh->advertise<inspector_gcs::UavList>("uav_list", 1);
+    uav_list_msg.uavs = uav_list;
+    uav_list_pub.publish(uav_list_msg);
     ros::Duration(0.1).sleep();
   }
 }
@@ -191,6 +208,7 @@ bool create_mission_cb(inspector_gcs::gcsCreateMission::Request &req, inspector_
     };
 
   BaseCoordinate = QGeoCoordinate{37.09098, -5.8722};
+  // BaseCoordinate = QGeoCoordinate{37.356516, -6.126977};
 
   std::cout << "rgb_camera horizontalFOV: " << rgb_camera.horizontalFOV(h_c) << std::endl;
   
@@ -268,6 +286,8 @@ bool send_mission_cb(inspector_gcs::gcsSendMission::Request &req, inspector_gcs:
   //
   // GET FLIGHT ANGLE
   double flight_angle = get_from_json.GetFlightDirection();
+  double orientation;
+  orientation = flight_angle - 90;
   //
   // CALCULATE SHOOTING DISTANCE
   double thermal_camera_horizontalFOV = thermal_camera.horizontalFOV(h_c);
@@ -275,6 +295,9 @@ bool send_mission_cb(inspector_gcs::gcsSendMission::Request &req, inspector_gcs:
   double ideal_long_overlap = get_from_json.GetLongitudinalOverlapIdeal();
   double thermal_camera_shoot_dist = thermal_camera_horizontalFOV * (1.0 - ideal_long_overlap);
   double rgb_camera_shoot_dist = rgb_camera_horizontalFOV * (1.0 - ideal_long_overlap);
+  
+  std::cout << "thermal_camera_shoot_dist: " << thermal_camera_shoot_dist << std::endl;
+  std::cout << "rgb_camera_shoot_dist: " << rgb_camera_shoot_dist << std::endl;
   //
 
   for (int i=0; i<n; i++) {
@@ -285,6 +308,7 @@ bool send_mission_cb(inspector_gcs::gcsSendMission::Request &req, inspector_gcs:
 
       mission_srv[i].request.h_d = h_d[i];
       mission_srv[i].request.flight_angle = flight_angle;
+      mission_srv[i].request.orientation = orientation;
       mission_srv[i].request.thermal_camera_shooting_distance = thermal_camera_shoot_dist;
       mission_srv[i].request.rgb_camera_shooting_distance = rgb_camera_shoot_dist;
       // mission_srv[i].request.MissionPath = missionPaths[i];

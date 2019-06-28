@@ -11,6 +11,7 @@
 #include <QGeoCoordinate> 
 // #include <QString>
 
+// std::cout << "test" << std::endl;
 
 using json = nlohmann::json;
 

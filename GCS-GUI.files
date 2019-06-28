@@ -1,0 +1,3 @@
+include/inspector_gcs/gcs_plugin.h
+src/gcs_plugin.cpp
+src/gcs_plugin.ui
