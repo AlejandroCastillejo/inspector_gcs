@@ -94,7 +94,7 @@ add_service_files(
   StopService.srv
   API_UavList.srv
   API_MissionCommand.srv
-  UAV_Link.srv
+  uavLink.srv
 )
 
 ## Generate actions in the 'action' folder

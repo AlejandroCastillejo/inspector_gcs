@@ -2,10 +2,6 @@
   "plant":"Utrera",
   "perimeter": [
     {
-      "latitude": 37.091076,
-      "longitude": -5.872242
-    },
-    {
       "latitude": 37.095076,
       "longitude": -5.878787
     },
@@ -20,8 +16,11 @@
     {
       "latitude": 37.090007,
       "longitude": -5.872788
+    },
+    {
+      "latitude": 37.091076,
+      "longitude": -5.872242
     }
-
   ],
   "flight characteristics": {
 	"take off": {
@@ -32,7 +31,7 @@
       "latitude": 43.520345,
       "longitude": -5.607823
     },
-	"flight direction": -90,
+	"flight direction": -232,
     "flight altitude": 30,
     "longitudinal overlap (minimum)": 0.6,
     "longitudinal overlap (ideal)": 0.8,

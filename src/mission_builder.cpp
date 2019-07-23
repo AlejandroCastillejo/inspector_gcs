@@ -3,11 +3,6 @@
 #include <inspector_gcs/mission_builder.h>
 #include <QtDebug>
 
-
-
-
-// void MissionsBuilder::_buildTransects(QList<QGeoCoordinate> _PolygonCoordinates, QList<QLineF>& _resultLines, QList<QList<QGeoCoordinate>>& resultTransects)
-// void MissionBuilder::_buildTransects(GetFromJson& _get_from_json, QGeoCoordinate BaseCoordinate, QList<QGeoCoordinate> _PolygonCoordinates, QList<QLineF>& _resultLines, QList<QList<QGeoCoordinate>>& resultTransects)
 void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCoordinate> _PolygonCoordinates, double _gridAngle, double _gridSpacing, QList<QLineF>& _resultLines, QList<QList<QGeoCoordinate>>& resultTransects)
 {
     // double _gridSpacing = 15;
@@ -30,7 +25,6 @@ void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCo
         polygonPoints += QPointF(x, y);
         // qCDebug(SurveyLog) << "_rebuildTransectsPhase1 vertex:x:y" << vertex << polygonPoints.last().x() << polygonPoints.last().y();
     }
-
 
     QList<QPointF>::iterator iter;
     std::cout << "\n NED Coordinates \n" << std::endl;
@@ -296,14 +290,14 @@ void MissionBuilder::_buildMission(int nDrones, QList<QLineF>& resultLines, QLis
 
 }
 
-void MissionBuilder::_heightDistribution(int nDrones, std::vector<int>& h_d, int h_mission, int h_minima, int d_seg) {
-
+void MissionBuilder::_heightDistribution(int nDrones, std::vector<int>& h_d, int h_mission, int h_min_seg, int d_seg) {
+    h_d.clear();
     int h_d_min = h_mission;
     int h_d_max = h_mission;
     for (int i=0; i<nDrones; i++) {
         h_d_min -= d_seg;
         h_d_max += d_seg;
-        if(h_d_min > h_minima) {
+        if(h_d_min > h_min_seg) {
             //  h_d[i]= h_d_min;
              h_d.push_back(h_d_min);
              i++;
@@ -330,6 +324,7 @@ std::vector<nav_msgs::Path> MissionBuilder::_createMissionPaths(QList<QList<QPoi
         for (QPointF Waypoint : iDroneWayPoints) {
             geometry_msgs::PoseStamped wp;
             wp.header.frame_id = "map";
+            wp.header.stamp = ros::Time::now();
             wp.pose.position.x = Waypoint.x();
             wp.pose.position.y = Waypoint.y();
             wp.pose.position.z = h_barrido;

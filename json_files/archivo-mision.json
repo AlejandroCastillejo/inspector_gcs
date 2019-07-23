@@ -1,0 +1,72 @@
+{
+  "plant": "Utrera",
+  "perimeter": [
+    {
+      "latitude": 43.520209,
+      "longitude": -5.607611
+    },
+    {
+      "latitude": 43.520705,
+      "longitude": -5.607525
+    },
+    {
+      "latitude": 43.520723,
+      "longitude": -5.60775
+    },
+    {
+      "latitude": 43.520511,
+      "longitude": -5.607793
+    },
+    {
+      "latitude": 43.520511,
+      "longitude": -5.607793
+    },
+    {
+      "latitude": 43.520524,
+      "longitude": -5.607917
+    },
+    {
+      "latitude": 43.520345,
+      "longitude": -5.607823
+    }
+  ],
+  "flight characteristics": {
+    "flight direction": 60,
+    "flight altitude": 30,
+    "longitudinal overlap (minimum)": 0.6,
+    "longitudinal overlap (ideal)": 0.8,
+    "transverse  overlap (minimum)": 0.3,
+    "transverse  overlap (ideal)": 0.6,
+    "verticality": 3,
+    "drift": 3,
+    "height variation over terrain": 3
+  },
+  "devices": [
+    {
+      "model": "DJI SDK UAV 1",
+      "variables_to_read": [
+        {
+          "uuid": "d3b3d0e8-afe3-4630-986c-b8e1cf99b0eb",
+          "name": "dji sdk gps pos lat"
+        },
+        {
+          "uuid": "e7dc9cae-fce9-4277-b9c7-e0676df7de69",
+          "name": "dji sdk gps pos lon"
+        }
+      ]
+    },
+    {
+      "model": "DJI SDK UAV 2",
+      "variables_to_read": [
+        {
+          "uuid": "7ac5782e-55e2-49ce-8e7c-9f2054aebe9a",
+          "name": "dji sdk gps pos lat"
+        },
+        {
+          "uuid": "193fbb4d-f38d-4997-844e-0d2d66f4fc7f",
+          "name": "dji sdk gps pos lon"
+        }
+      ]
+    }
+  ]
+}

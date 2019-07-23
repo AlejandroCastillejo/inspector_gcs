@@ -6,6 +6,7 @@
 #include <thread>
 // ROS
 #include <ros/ros.h>
+#include <ros/package.h>
 #include "std_msgs/Empty.h"
 #include "std_msgs/String.h"
 #include <std_msgs/Int8.h>
@@ -30,10 +31,11 @@
 // #include <QComboBox>
 #include <QList>
 #include <QVector> 
+#include <pluginlib/class_list_macros.h>
 
-// #include <QLineF>
-// #include <QPolygonF>
-// #include <QGeoCoordinate> 
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+
 
 // Services
 #include <inspector_gcs/MissionService.h>
@@ -110,6 +112,10 @@ public:
   // --------------------------------------------------------------------------
 protected slots:
 
+  virtual void press_EditMissionFile();
+  virtual void press_EditCamerasFile();
+  virtual void press_OpenMapView();
+
   virtual void press_CreateMission();
   virtual void press_SendMission();
 
@@ -126,10 +132,10 @@ protected slots:
   // virtual void on_uav_selection_Box_currentIndexChanged(const QString &arg1);
   // virtual void on_uav_selection_Box_currentIndexChanged(int index);
 
-  virtual void press_takeOff();
-  virtual void press_land();
-  virtual void press_goToWaypoint();
-  virtual void press_setVelocity();
+  // virtual void press_takeOff();
+  // virtual void press_land();
+  // virtual void press_goToWaypoint();
+  // virtual void press_setVelocity();
 
 protected:
 
@@ -143,9 +149,9 @@ protected:
 
 
   // UAL //
-  virtual void ual_state_cb(const std_msgs::String msg);
+  virtual void ual_state_cb(const uav_abstraction_layer::State msg);
   virtual void pose_callback(const geometry_msgs::PoseStamped);
-  virtual void velocity_callback(const geometry_msgs::TwistStamped);
+  // virtual void velocity_callback(const geometry_msgs::TwistStamped);
   // UAL //
 
   // Comment in to signal that the plugin has a way to configure it
@@ -171,6 +177,8 @@ private:
 
   // Private variables
   QStringList uav_list;
+  bool mission_created;
+  bool mission_sent;
 
   // Thread
   std::thread gui_thread;
@@ -211,6 +219,17 @@ private:
   geometry_msgs::TwistStamped vel;
   geometry_msgs::PoseStamped wp;
 
+  int stby_action_service_count;
+  int stop_service_count;
+  int paused_state_action_service_count;
+
+  std::vector<std::string> ual_states = { "Uninitialized", 
+                                        "Landed Disarmed", 
+                                        "Landed Armed", 
+                                        "Taking Off",
+                                        "Flying Auto",
+                                        "Flying Manual",
+                                        "Landed" };
   // ros::Publisher resolution;
   // --------------------------------------------------------------------------
 };
