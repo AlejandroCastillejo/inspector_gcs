@@ -17,7 +17,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <node pkg="inspector_gcs" type="inspector_gcs_node" name="gcs_node" output="screen" />
 
     <node name = "gcs_gui" pkg = "rqt_gui" type = "rqt_gui" respawn = "false" output = "screen" 
-    args = "--perspective-file $(find inspector_gcs)/rqt/gcs_gui.perspective"/>
+    args = "--perspective-file $(find inspector_gcs)/rqt/gcs_gui_2.perspective"/>
 
 
     <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" respawn="true" respawn_delay="5" />
@@ -46,6 +46,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <param name="mission_file_location" value="$(find inspector_gcs)/mission_file.json"/>
         <param name="cameras_file_location" value="$(find inspector_gcs)/cameras.json"/>
     </node> -->
+   
+   	<node pkg="rostful_launcher" type="run_rostful.py" name="run_rostful" output="screen" args="-c $(find inspector_gcs)/config/rostful.cfg" />
+
 
 </launch>
 

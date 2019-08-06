@@ -5,15 +5,10 @@
 
 void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCoordinate> _PolygonCoordinates, double _gridAngle, double _gridSpacing, QList<QLineF>& _resultLines, QList<QList<QGeoCoordinate>>& resultTransects)
 {
-    // double _gridSpacing = 15;
-
     QList<QPointF> polygonPoints;
-    // QGeoCoordinate tangentOrigin = _PolygonCoordinates.pathModel().value<QGCCoordinate*>(0)->coordinate();
     QGeoCoordinate tangentOrigin = _PolygonCoordinates[0];
-    // qCDebug(SurveyLog) << "_rebuildTransectsPhase1 Convert polygon to NED - _PolygonCoordinates.count():tangentOrigin" << _PolygonCoordinates.count() << tangentOrigin;
     for (int i=0; i<_PolygonCoordinates.count(); i++) {
         double y, x, down;
-        // QGeoCoordinate vertex = _PolygonCoordinates.pathModel().value<QGCCoordinate*>(i)->coordinate();
         QGeoCoordinate vertex = _PolygonCoordinates[i];
         if (i == 0) {
             // This avoids a nan calculation that comes out of convertGeoToNed
@@ -23,7 +18,6 @@ void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCo
             convertGeoToNed(vertex, tangentOrigin, &x, &y, &down);
         }
         polygonPoints += QPointF(x, y);
-        // qCDebug(SurveyLog) << "_rebuildTransectsPhase1 vertex:x:y" << vertex << polygonPoints.last().x() << polygonPoints.last().y();
     }
 
     QList<QPointF>::iterator iter;
@@ -35,14 +29,6 @@ void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCo
 
     // Generate transects
 
-    // nlohmann::json js = nlohmann::json::array({});
-    // std::ifstream file("mission_parameters.json");
-    // file >> js;
-    // std::cout << "\ngridAngle: " << js["gridAngle"] << std::endl;
-    // std::cout << "gridSpacing: " << js["gridSpacing"] << "\n" << std::endl;
-
-    // double _gridAngle = js["gridAngle"];
-
     // double _gridAngle = _get_from_json.GetFlightDirection() - 90;
     std::cout << "\ngridAngle: " << _gridAngle << std::endl;
     
@@ -50,21 +36,18 @@ void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCo
     
     QPolygonF polygon;
     for (int i=0; i<polygonPoints.count(); i++) {
-        // qDebug() << "Vertex" << polygonPoints[i];
-        // qCDebug(SurveyLog) << "Vertex" << polygonPoints[i];
         polygon << polygonPoints[i];
     }
     polygon << polygonPoints[0];
 
-    qDebug() << "polygon" << polygon << endl;
+    qDebug() << "polygon: \n" << polygon << endl;
 
     QRectF boundingRect = polygon.boundingRect();
-    qDebug() << "boundingRect" << boundingRect;
+    qDebug() << "boundingRect: \n" << boundingRect;
+    // qDebug() << "Bounding rect" << boundingRect.topLeft().x() << boundingRect.topLeft().y() << boundingRect.bottomRight().x() << boundingRect.bottomRight().y();
 
     QPointF boundingCenter = boundingRect.center();
-    qDebug() << "boundingCenter" << boundingCenter;
-
-    // qDebug() << "Bounding rect" << boundingRect.topLeft().x() << boundingRect.topLeft().y() << boundingRect.bottomRight().x() << boundingRect.bottomRight().y();
+    qDebug() << "boundingCenter: \n" << boundingCenter;
     
     // Create set of rotated parallel lines within the expanded bounding rect. Make the lines larger than the
     // bounding box to guarantee intersection.
@@ -94,10 +77,8 @@ void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCo
 
     _intersectLinesWithPolygon(lineList, polygon, intersectLines);
 
-    
     QList<QLineF> resultLines;
     _adjustLineDirection(intersectLines, resultLines);
-
     // qDebug() << endl << "intersectLines" << endl << resultLines << endl;
     // qDebug() << endl << "resultLines" << endl << resultLines << endl;
 
@@ -121,8 +102,6 @@ void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCo
 
     _findEntryPoint(BaseCoordinate, _PolygonCoordinates);
     _adjustLinesToEntryPointLocation(_resultLines);
-
-
     // qDebug() << endl << "resultLines ajusted" << endl << resultLines << endl;
     
 
@@ -240,8 +219,6 @@ void MissionBuilder::_buildMission(int nDrones, QList<QLineF>& resultLines, QLis
     double eachLength = totalLength/nDrones;
     qDebug() << "each drone Lenght:  " << eachLength << endl;
 
-
-    // QList<QList<QPointF>> droneWayPoints;
     QList<QPointF> idroneWayPoints;
     QPointF interWp;
     int lastwp=0;
@@ -283,9 +260,6 @@ void MissionBuilder::_buildMission(int nDrones, QList<QLineF>& resultLines, QLis
 
         idroneWayPoints.clear();
         lastwp=j;
-
-        // qDebug() << droneWayPoints[i];
-        // qDebug()<< endl;
     }
 
 }
@@ -446,7 +420,6 @@ void MissionBuilder::_intersectLinesWithPolygon(const QList<QLineF>& lineList, c
 
 /// Adjust the line segments such that they are all going the same direction with respect to going from P1->P2
 void MissionBuilder::_adjustLineDirection(const QList<QLineF>& lineList, QList<QLineF>& resultLines)
-// void MissionsBuilder::_adjustLineDirection(const QList<QLineF>& lineList, QList<QLineF>& resultLines)
 {
     qreal firstAngle = 0;
     for (int i=0; i<lineList.count(); i++) {
@@ -491,14 +464,11 @@ void MissionBuilder::_adjustLinesToEntryPointLocation(QList<QLineF>& lines)
     }
     
     if (reversePoints) {
-        // qCDebug(SurveyComplexItemLog) << "_adjustTransectsToEntryPointLocation Reverse Points";
         _reverseInternalLinePoints(lines);
     }
     if (reverseTransects) {
-        // qCDebug(SurveyComplexItemLog) << "_adjustTransectsToEntryPointLocation Reverse Transects";
         _reverseLineOrder(lines);
     }
-    // qCDebug(SurveyComplexItemLog) << "_adjustTransectsToEntryPointLocation Modified entry point:entryLocation" << transects.first().first() << _entryPoint;
 }
 
 

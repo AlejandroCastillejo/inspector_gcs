@@ -96,10 +96,10 @@ void GcsPlugin::initPlugin(qt_gui_cpp::PluginContext &context)
   // connect(ui_.pushButton_setVelocity, SIGNAL(pressed()), this, SLOT(press_setVelocity()));
   // SUBSCRIBERS
   // UAL //
-  srvTakeOff = n_.serviceClient<uav_abstraction_layer::TakeOff>("/uav_1/ual/take_off");
-  srvLand = n_.serviceClient<uav_abstraction_layer::Land>("/uav_1/ual/land");
-  srvGoToWaypoint = n_.serviceClient<uav_abstraction_layer::GoToWaypoint>("/uav_1/ual/go_to_waypoint");
-  srvSetVelocity = n_.serviceClient<uav_abstraction_layer::SetVelocity>("/uav_1/ual/set_velocity");
+  // srvTakeOff = n_.serviceClient<uav_abstraction_layer::TakeOff>("/uav_1/ual/take_off");
+  // srvLand = n_.serviceClient<uav_abstraction_layer::Land>("/uav_1/ual/land");
+  // srvGoToWaypoint = n_.serviceClient<uav_abstraction_layer::GoToWaypoint>("/uav_1/ual/go_to_waypoint");
+  // srvSetVelocity = n_.serviceClient<uav_abstraction_layer::SetVelocity>("/uav_1/ual/set_velocity");
   // state_sub = n_.subscribe("/uav_1/ual/state", 0, &GcsPlugin::state_callback, this);
   // pose_sub = n_.subscribe("/uav_1/ual/pose", 0, &GcsPlugin::pose_callback, this);
   // velocity_sub = n_.subscribe("/uav_1/ual/velocity", 0, &GcsPlugin::velocity_callback, this);

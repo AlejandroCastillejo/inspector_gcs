@@ -64,45 +64,11 @@
 namespace inspector_gcs
 {
 
-// class cloudSignal : public QObject
-// {
-//   Q_OBJECT
-
-// public:
-//   cloudSignal(Ui::GcsPluginWidget ui)
-//   {
-//     m_value = 0;
-//     ui_ = ui;
-//   }
-
-//   int value() const { return m_value; }
-
-// public slots:
-//   void setValue(int value);
-
-// signals:
-//   void valueChanged(int newValue);
-
-// private:
-//   int m_value;
-//   Ui::GcsPluginWidget ui_;
-// };
-
 class GcsPlugin : public rqt_gui_cpp::Plugin
 {
   Q_OBJECT
+
 public:
-  // QString qfilelocation;
-
-  // QList<QGeoCoordinate> PolygonCoordinates;
-  // QList<QLineF> resultLinesNED;
-  // QList<QList<QGeoCoordinate>> resultTransectsGeo;
-  // QList<QList<QPointF>> droneWayPointsNED;
-  // QList<QList<QGeoCoordinate>> droneWayPointsGeo;
-  // std::vector<nav_msgs::Path> missionPaths;
-  
-
-//
   GcsPlugin();
   virtual void initPlugin(qt_gui_cpp::PluginContext &context);
   virtual void shutdownPlugin();
@@ -129,51 +95,28 @@ protected slots:
   virtual void press_ResumeMission_2();
   virtual void press_AbortMission_2();
 
-  // virtual void on_uav_selection_Box_currentIndexChanged(const QString &arg1);
-  // virtual void on_uav_selection_Box_currentIndexChanged(int index);
-
-  // virtual void press_takeOff();
-  // virtual void press_land();
-  // virtual void press_goToWaypoint();
-  // virtual void press_setVelocity();
-
 protected:
 
   // DJI_SDK 
   virtual void gps_pos_cb(const sensor_msgs::NavSatFix);
   // GCS
   virtual void uav_list_cb(const inspector_gcs::UavList);
-  // virtual void uav_services_update();
   // ADL
   virtual void adl_state_cb(const std_msgs::String msg);
-
-
   // UAL //
   virtual void ual_state_cb(const uav_abstraction_layer::State msg);
   virtual void pose_callback(const geometry_msgs::PoseStamped);
-  // virtual void velocity_callback(const geometry_msgs::TwistStamped);
-  // UAL //
 
   // Comment in to signal that the plugin has a way to configure it
   // bool hasConfiguration() const;
   // void triggerConfiguration();
 
 private slots:
-  // void on_pushButton_OpenJsonFile_clicked();
-
-  // void on_pushButton_nuevo_clicked();
-
-  // void on_pushButton_CreateMission_clicked();
-
-
-  // void on_pushButton_SendMission_clicked();
-
 
 private:
   QWidget *widget_;
   // Node
   ros::NodeHandle n_;
-  // cloudSignal* cloudUpdate;
 
   // Private variables
   QStringList uav_list;
@@ -183,7 +126,6 @@ private:
   // Thread
   std::thread gui_thread;
   void guiThread();
-
 
   //////////////////////////////////////////
   // Inspector GCS //
@@ -211,13 +153,13 @@ private:
   ros::Subscriber ual_state_sub, pose_sub, velocity_sub;
   
   // UAL //
-  ros::ServiceClient srvTakeOff, srvLand, srvGoToWaypoint, srvSetVelocity;
-  uav_abstraction_layer::TakeOff take_off;
-  uav_abstraction_layer::Land land;
-  uav_abstraction_layer::GoToWaypoint go_to_waypoint;
-  uav_abstraction_layer::SetVelocity set_velocity;
-  geometry_msgs::TwistStamped vel;
-  geometry_msgs::PoseStamped wp;
+  // ros::ServiceClient srvTakeOff, srvLand, srvGoToWaypoint, srvSetVelocity;
+  // uav_abstraction_layer::TakeOff take_off;
+  // uav_abstraction_layer::Land land;
+  // uav_abstraction_layer::GoToWaypoint go_to_waypoint;
+  // uav_abstraction_layer::SetVelocity set_velocity;
+  // geometry_msgs::TwistStamped vel;
+  // geometry_msgs::PoseStamped wp;
 
   int stby_action_service_count;
   int stop_service_count;

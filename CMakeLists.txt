@@ -94,6 +94,8 @@ add_service_files(
   StopService.srv
   API_UavList.srv
   API_MissionCommand.srv
+  API_MissionFile.srv
+  API_GetTopic.srv
   uavLink.srv
 )
 
@@ -188,7 +190,7 @@ include_directories(
 )
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-    src/main.cpp src/get_from_json.cpp src/mission_builder.cpp src/camera_calc.cpp src/gcs_services.cpp src/rostful_services.cpp src/QGCGeo.cc src/UTM.cpp
+    src/main.cpp src/get_from_json.cpp src/mission_builder.cpp src/camera_calc.cpp src/gcs_services.cpp src/QGCGeo.cc src/UTM.cpp
     # src/get_from_json.cpp src/mission_builder.cpp src/QGCGeo.cc src/UTM.cpp
     ${inspector_gcs_SRCS}
     ${inspector_gcs_MOCS}

@@ -1,7 +1,6 @@
 #ifndef CAMERA_CALC_H
 #define CAMERA_CALC_H
 
-// #include <ros/ros.h>
 #include <json.hpp> // single-include file for json parsing
 #include <fstream>
 #include <iostream>
@@ -21,7 +20,6 @@ struct CameraSpec {
     double verticalResolution;
 };
 
-
 class CameraCalc {
 
     public:
@@ -32,8 +30,6 @@ class CameraCalc {
     private:
         CameraSpec spec;
         json cameras_js;
-
-
 };
 
 #endif //CAMERA_CALC_H

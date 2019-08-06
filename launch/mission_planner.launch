@@ -1,7 +1,0 @@
-<launch>
-
-  <node pkg="mission_planner" name="mission_planner" type="MissionManager" output="screen">
-    
-  </node>
-
-</launch>

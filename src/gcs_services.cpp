@@ -3,31 +3,18 @@
 
 std::string mission_file_location = ros::package::getPath("inspector_gcs") + "/json_files/mission_file.json";
 
-GcsServices::GcsServices(ros::NodeHandle &_nh, std::vector<std::string> &_uav_list, QList<QList<QPointF>> &_droneWayPointsNED) 
+GcsServices::GcsServices(ros::NodeHandle &_nh, std::vector<std::string> &_uav_list) 
   : get_from_json(mission_file_location), 
     mission_builder(), 
     rgb_camera(rgb_camera_name), 
     thermal_camera(thermal_camera_name)
 {
-    
     p_nh = &_nh;                //pointer to nh
     p_uav_list = &_uav_list;    
-
-    // package_path = ros::package::getPath("inspector_gcs");
-    // mission_file_location = package_path + "/json_files/mission_file.json";
-
-
-    // get_from_json = GetFromJson::(mission_file_location);
-    // MissionBuilder mission_builder;
-    // CameraCalc Objects
-    // CameraCalc() : rgb_camera("Sony a6000");
-    // rgb_camera = CameraCalc::("Sony a6000");
-    // CameraCalc thermal_camera("WIRIS 2nd gen");
 
     uav_link_srv = _nh.advertiseService("uav_link_service", &GcsServices::uav_link_server_cb, this);
     create_mission_srv = _nh.advertiseService("create_mission_service", &GcsServices::create_mission_cb, this);
     send_mission_srv = _nh.advertiseService("send_mission_service", &GcsServices::send_mission_cb, this);
-
 }
 
 bool GcsServices::uav_link_server_cb(inspector_gcs::uavLink::Request &req, inspector_gcs::uavLink::Response &res)
@@ -91,27 +78,23 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
     };
 
   // Obtain Base Coordinate from first UAV in uav_list
-  // uav_pose_sub = p_nh->subscribe<geometry_msgs::PoseStamped>(uav_list[0] + "/ual/pose", 1, uav_pose_sub_cb);
-  uav1_coordinate_sub = p_nh->subscribe<sensor_msgs::NavSatFix>(uav_list[0] + "/dji_sdk/gps_position", 1, \
-        [this](const sensor_msgs::NavSatFix::ConstPtr& _msg) {
-            this->uav1_coordinate = *_msg;
-            this->BaseCoordinate = QGeoCoordinate{uav1_coordinate.latitude, uav1_coordinate.longitude};
-            qDebug() << "BaseCoordinate: " << BaseCoordinate << endl;
+  uav_coordiante_ptr = ros::topic::waitForMessage<sensor_msgs::NavSatFix>(uav_list[0] + "/dji_sdk/gps_position", ros::Duration(5));
+  
+  if (uav_coordiante_ptr != NULL) {
+    uav_coordinate = *uav_coordiante_ptr;
+    BaseCoordinate = QGeoCoordinate{uav_coordinate.latitude, uav_coordinate.longitude};
+    ROS_INFO("Base coordinate set as first uav coordinate: \n latitude: %f \n longitude: %f \n",uav_coordinate.latitude, uav_coordinate.longitude);
+  }
+  else {
+    ROS_ERROR("Can't set base coordinate");
+    return false;
+  }
 
-  });
-  // while (!BaseCoordinate.isValid()) {
-  //   std::cout << "waiting for BaseCoordinate to be set" << std::endl;
-  //   ros::Duration(0.5).sleep();
-  // }
-  std::cout << uav1_coordinate << std::endl;
-  uav1_coordinate_sub.shutdown();
-    // test
-  BaseCoordinate = QGeoCoordinate{37.091142, -5.872402};    // manually set Base Coordinate
+  //  // for debugging
+  // BaseCoordinate = QGeoCoordinate{37.091142, -5.872402};    // force Base Coordinate
   // BaseCoordinate = QGeoCoordinate{37.356516, -6.126977};
-  qDebug() << "BaseCoordinate: " << BaseCoordinate << endl;
-
-
-  std::cout << "rgb_camera horizontalFOV: " << rgb_camera.horizontalFOV(h_c) << std::endl;
+  // qDebug() << "forced BaseCoordinate: " << BaseCoordinate << endl;
+  // //
   
   // OBTAIN gidSpacing
   double min_verticalFOV = std::min(rgb_camera.verticalFOV(h_c), thermal_camera.verticalFOV(h_c) );
@@ -137,7 +120,6 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
   qDebug() << endl;
   // qDebug() << i;
     for (int j=0; j<droneWayPointsNED[i].size(); j++) {
-      // qDebug() << j;
       // qDebug() << droneWayPointsNED[i][j];
       convertNedToGeo(droneWayPointsNED[i][j].x(), droneWayPointsNED[i][j].y(), 0, tangentOrigin, coord);
       // qDebug() << coord;
@@ -202,9 +184,6 @@ bool GcsServices::send_mission_cb(inspector_gcs::gcsSendMission::Request &req, i
   //
 
   for (int i=0; i<n; i++) {
-      // ros::ServiceClient client = nh.serviceClient<inspector_gcs::MissionService>("mission_service_%d", i);
-      // std::string ms_string = "mission_service_%d", i;
-      // mission_client[i] = p_nh->serviceClient<inspector_gcs::MissionService>("mission_service_" + std::to_string(i));
       mission_client[i] = p_nh->serviceClient<inspector_gcs::MissionService>(uav_list[i] + "/mission_service");
 
       mission_service[i].request.h_d = h_d[i];
@@ -249,11 +228,9 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
 
   int n = _droneWayPointsNED.size();
 
-  // ros::Publisher _pub = p_nh->advertise<visualization_msgs::Marker>("visualization_marker", 1);
   ros::Publisher _pub[10];
   for (int i = 0; i < 10; i++) {
     _pub[i] = p_nh->advertise<visualization_msgs::Marker>("visualization_marker_" + std::to_string(i), 10);
-    // _pub[i] = p_nh->advertise<visualization_msgs::Marker>("visualization_marker", 10);
   }
   
   // define base local coordinate
@@ -278,7 +255,6 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
       // LINE_STRIP/LINE_LIST markers use only the x component of scale, for the line width
       line_strip[i].scale.x = 1;
 
-      // std::cout << "i%3  " << (i+3)%3 << std::endl;
       switch (i%3) {
         case 0:
           // Points are green
@@ -376,57 +352,52 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
       _pub[i].publish(line_strip[i]);
       sleep(1); 
     }
-
-    // for (int i=0; i<_droneWayPointsGeo.size(); i++) 
-    // {
-    //   points[i].header.frame_id = line_strip[i].header.frame_id = "/map";
-    //   // points[i].header.stamp = line_strip[i].header.stamp = ros::Time::now();
-    //   points[i].header.stamp = line_strip[i].header.stamp = ros_time;
-    //   points[i].ns = line_strip[i].ns = "points";
-    //   points[i].action =  line_strip[i].action = visualization_msgs::Marker::ADD;
-    //   points[i].pose.orientation.w =line_strip[i].pose.orientation.w = 1.0;
-      
-    //   geometry_msgs::Point p;
-
-    //   p.x = p.y = p.z = 0;
-    //   points[i].points.push_back(p);
-    //   line_strip[i].points.push_back(p);
-
-    //   p.z = _h_d[i];
-    //   points[i].points.push_back(p);
-    //   line_strip[i].points.push_back(p);
-
-    //   p.x = _droneWayPointsGeo[i][0].latitude();
-    //   p.y = _droneWayPointsGeo[i][0].longitude();
-    //   points[i].points.push_back(p);
-    //   line_strip[i].points.push_back(p);
-
-    //   for (int j=0; j<_droneWayPointsGeo[i].size(); j++) {
-    //     p.x = _droneWayPointsGeo[i][j].latitude();
-    //     p.y = _droneWayPointsGeo[i][j].longitude();
-    //     p.z = _h_c;  
-    //     points[i].points.push_back(p);
-    //     line_strip[i].points.push_back(p);
-    //   }       
-      
-    //   int l = _droneWayPointsGeo[i].size();
-    //   p.x = _droneWayPointsGeo[i][l-1].latitude();
-    //   p.y = _droneWayPointsGeo[i][l-1].longitude();
-    //   p.z = _h_d[i];
-    //   points[i].points.push_back(p);
-    //   line_strip[i].points.push_back(p); 
-      
-    //   p.x = p.y = 0;
-    //   points[i].points.push_back(p);
-    //   line_strip[i].points.push_back(p);
-            
-    //   p.z = 0;
-    //   points[i].points.push_back(p);
-    //   line_strip[i].points.push_back(p);
-
-    //   _pub[i].publish(points[i]);
-    //   _pub[i].publish(line_strip[i]);
-    //   sleep(1); 
-    // }
   }  
 }
+
+/*
+  // Subscribers
+  ros::Subscriber uav_state_sub[n];
+
+  // for (auto uav_id : uav_list) {
+  for (int i=0; i<uav_list.size(); i++) {
+    std::string uav_id = uav_list[i];
+    std::cout << "subscribed to " << uav_id << "/state" << std::endl;
+    uav_state_sub[i] = nh.subscribe<ualState>(uav_id + "/ual/state", 1, std::bind(uav_state_sub_cb, std::placeholders::_1, uav_id));
+
+    map_uav_state.insert(std::pair<std::string, uav_state>(uav_list[i], uav_state_empty));
+    // map_uav_state.insert((uav_list[1]));
+  }
+ */
+
+  // for (iter_uav = map_uav_state.begin(); iter_uav != map_uav_state.end(); ++iter_uav) {
+  //   uav_state_sub[n] = nh.subscribe<ualState>(uav_id +"/ual/state", 1, std::bind(uav_state_sub_cb, std::placeholders::_1, uav_id));
+  // }
+
+// void mainThread() {
+//   while(ros::ok()) {
+//     for (iter_uav = map_uav_state.begin(); iter_uav != map_uav_state.end(); ++iter_uav) {
+//       if (ros::Time::now().toSec() - iter_uav->second.last_msg.toSec() > 0.5) {
+//         iter_uav->second.connected = false;
+//         // ROS_INFO("Connection with %s lost", iter_uav->first.c_str());
+//       }
+//     }
+
+//     ros::Duration(0.1).sleep();
+//   }
+// }
+
+// ROS subscribers CallBacks
+// void uav_state_sub_cb(const uav_abstraction_layer::State::ConstPtr& msg, const std::string _uav_id);
+
+// Subscribers callbacks
+
+// void uav_state_sub_cb(const uav_abstraction_layer::State::ConstPtr& msg, const std::string _uav_id) {
+//   // ROS_INFO("%s connected", _uav_id.c_str());
+
+//   map_uav_state["_uav_id"].connected = true;
+//   // ROS_INFO("%s connected", iter_uav->first.c_str());
+//   map_uav_state["_uav_id"].last_msg = ros::Time::now();
+//   map_uav_state["_uav_id"].ual_state = *msg;
+
+// }
