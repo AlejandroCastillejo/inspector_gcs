@@ -28,6 +28,11 @@ Before the current package, some dependencies need to be installed.
     sudo apt-get install ros-kinetic-multimaster-fkie 
     ```
 
+ * ROStful launcher:
+   ```
+   sudo apt-get install ros-kinetic-rostful
+   ```
+   
  * Qt5 dependencies: 
     ```
 	sudo apt-get install qtbase5-dev
