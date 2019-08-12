@@ -32,7 +32,7 @@
       "latitude": 43.520345,
       "longitude": -5.607823
     },
-	"flight direction": -90,
+	"flight direction": 0,
     "flight altitude": 30,
     "longitudinal overlap (minimum)": 0.6,
     "longitudinal overlap (ideal)": 0.8,

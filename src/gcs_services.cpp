@@ -233,10 +233,27 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
     _pub[i] = p_nh->advertise<visualization_msgs::Marker>("visualization_marker_" + std::to_string(i), 10);
   }
   
-  // define base local coordinate
-  geometry_msgs::Point localBaseCoordinate;
-  convertGeoToNed(BaseCoordinate, PolygonCoordinates[0], &localBaseCoordinate.x, &localBaseCoordinate.y, &localBaseCoordinate.z);
-  std::cout << "localBaseCoordinate" << localBaseCoordinate << std::endl;
+  // define base local coordinates
+  // geometry_msgs::Point localBaseCoordinate;
+  // convertGeoToNed(BaseCoordinate, PolygonCoordinates[0], &localBaseCoordinate.x, &localBaseCoordinate.y, &localBaseCoordinate.z);
+  // std::cout << "localBaseCoordinate" << localBaseCoordinate << std::endl;
+
+  geometry_msgs::Point localBaseCoordinate[n];
+
+  for (int i = 0; i < n; i++) {
+    uav_coordiante_ptr = ros::topic::waitForMessage<sensor_msgs::NavSatFix>(uav_list[i] + "/dji_sdk/gps_position", ros::Duration(5));
+
+    if (uav_coordiante_ptr != NULL) {
+      uav_coordinate = *uav_coordiante_ptr;
+      BaseCoordinate = QGeoCoordinate{uav_coordinate.latitude, uav_coordinate.longitude};
+      ROS_INFO("uav: %s base coordinate set: \n latitude: %f \n longitude: %f \n", uav_list[i].c_str(), uav_coordinate.latitude, uav_coordinate.longitude);
+    }
+    else {
+      ROS_ERROR("Can't set base coordinate for uav: %s", uav_list[i].c_str());
+      // return false;
+    }
+    convertGeoToNed(BaseCoordinate, PolygonCoordinates[0], &localBaseCoordinate[i].x, &localBaseCoordinate[i].y, &localBaseCoordinate[i].z);
+  }
 
   while (ros::ok())
   {
@@ -309,8 +326,8 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
       
       geometry_msgs::Point p;
 
-      p.x = localBaseCoordinate.y;
-      p.y = localBaseCoordinate.x;
+      p.x = localBaseCoordinate[i].y;
+      p.y = localBaseCoordinate[i].x;
       p.z = 0;
       points[i].points.push_back(p);
       line_strip[i].points.push_back(p);
@@ -339,8 +356,8 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
       points[i].points.push_back(p);
       line_strip[i].points.push_back(p); 
       
-      p.x = localBaseCoordinate.y;
-      p.y = localBaseCoordinate.x;
+      p.x = localBaseCoordinate[i].y;
+      p.y = localBaseCoordinate[i].x;
       points[i].points.push_back(p);
       line_strip[i].points.push_back(p);
             
