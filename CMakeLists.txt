@@ -96,6 +96,7 @@ add_service_files(
   API_MissionCommand.srv
   API_MissionFile.srv
   API_GetTopic.srv
+  API_GetTopicsList.srv
   uavLink.srv
 )
 

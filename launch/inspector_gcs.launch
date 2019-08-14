@@ -19,6 +19,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <node name = "gcs_gui" pkg = "rqt_gui" type = "rqt_gui" respawn = "false" output = "screen" 
     args = "--perspective-file $(find inspector_gcs)/rqt/gcs_gui_2.perspective"/>
 
+    <node pkg="inspector_gcs" type="rostful_services.py" name="rostful_services" output="screen" />
 
     <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" respawn="true" respawn_delay="5" />
   
