@@ -19,6 +19,7 @@ using json = nlohmann::json;
 class GetFromJson {
     public:
         GetFromJson(std::string& _filelocation);
+        bool LoadFile();
         // bool GetCoordinates(std::list<QGeoCoordinate>& _PolygonCoordinates);
         // GetPlantName();
         bool GetCoordinates(QList<QGeoCoordinate>& _PolygonCoordinates);
@@ -31,6 +32,7 @@ class GetFromJson {
         double GetTransverseOverlapIdeal();
 
     private:
+        std::string filelocation;
         json mission_js;
 };
 

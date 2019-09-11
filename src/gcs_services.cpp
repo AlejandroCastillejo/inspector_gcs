@@ -62,6 +62,9 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
   }
   std::cout << "\n" << "uav_list size: " << n << "\n" << std::endl;
   
+  // LOAD JSON FILE
+  get_from_json.LoadFile();
+  //
   // GET PERIMETER & PARAMETERS FROM JSON FILE
   get_from_json.GetCoordinates(PolygonCoordinates);
   // gridAngle = get_from_json.GetFlightDirection() - 90;
@@ -226,7 +229,7 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
   map_origin_pub.publish(map_origin);
   // 
 
-  int n = _droneWayPointsNED.size();
+  int n = droneWayPointsNED.size();
 
   ros::Publisher _pub[10];
   for (int i = 0; i < 10; i++) {
@@ -316,7 +319,7 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
 
     ros::Time ros_time = ros::Time::now();
 
-    for (int i=0; i<_droneWayPointsNED.size(); i++) {
+    for (int i=0; i<droneWayPointsNED.size(); i++) {
       points[i].header.frame_id = line_strip[i].header.frame_id = "/map";
       // points[i].header.stamp = line_strip[i].header.stamp = ros::Time::now();
       points[i].header.stamp = line_strip[i].header.stamp = ros_time;
@@ -336,22 +339,22 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
       points[i].points.push_back(p);
       line_strip[i].points.push_back(p);
 
-      p.x = _droneWayPointsNED[i][0].y();
-      p.y = _droneWayPointsNED[i][0].x();
+      p.x = droneWayPointsNED[i][0].y();
+      p.y = droneWayPointsNED[i][0].x();
       points[i].points.push_back(p);
       line_strip[i].points.push_back(p);
 
-      for (int j=0; j<_droneWayPointsNED[i].size(); j++) {
-        p.x = _droneWayPointsNED[i][j].y();
-        p.y = _droneWayPointsNED[i][j].x();
+      for (int j=0; j<droneWayPointsNED[i].size(); j++) {
+        p.x = droneWayPointsNED[i][j].y();
+        p.y = droneWayPointsNED[i][j].x();
         p.z = _h_c;  
         points[i].points.push_back(p);
         line_strip[i].points.push_back(p);
       }       
       
-      int l = _droneWayPointsNED[i].size();
-      p.x = _droneWayPointsNED[i][l-1].y();
-      p.y = _droneWayPointsNED[i][l-1].x();
+      int l = droneWayPointsNED[i].size();
+      p.x = droneWayPointsNED[i][l-1].y();
+      p.y = droneWayPointsNED[i][l-1].x();
       p.z = _h_d[i];
       points[i].points.push_back(p);
       line_strip[i].points.push_back(p); 

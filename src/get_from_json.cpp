@@ -1,16 +1,17 @@
 #include <inspector_gcs/get_from_json.h>
 
 GetFromJson::GetFromJson(std::string& _filelocation) {
+  filelocation = _filelocation;
   mission_js = json::array({});
 
-  // std::ifstream file("pista_labs.json");
-  // std::ifstream file("planta_utrera.json");
-  // std::ifstream file("mission_file.json");
-  std::ifstream file(_filelocation.c_str());
-  // std::cout << "_filelocation" << _filelocation << std::endl;
-  // std::cout << file << std::endl;
+  std::ifstream file(filelocation.c_str());
   file >> mission_js;
 };
+
+bool GetFromJson::LoadFile() {
+  std::ifstream file(filelocation.c_str());
+  file >> mission_js;
+}
 
 bool GetFromJson::GetCoordinates(QList<QGeoCoordinate>& _PolygonCoordinates) {
 
