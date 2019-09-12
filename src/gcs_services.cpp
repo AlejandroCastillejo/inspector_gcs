@@ -149,7 +149,7 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
   ROS_INFO("Ready to send mission \n");
  
  if (!mission_created) {
-    vis_thread = std::thread(&GcsServices::visualization_thread, this, droneWayPointsNED, droneWayPointsGeo, h_d, h_c);
+    vis_thread = std::thread(&GcsServices::visualization_thread, this);
  }
 
   mission_created = true;
@@ -209,7 +209,7 @@ bool GcsServices::send_mission_cb(inspector_gcs::gcsSendMission::Request &req, i
   return true;
 }
 
-void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED, QList<QList<QGeoCoordinate>> _droneWayPointsGeo,  std::vector<int> _h_d, int _h_c) 
+void GcsServices::visualization_thread() 
 {
   // publish rviz_satellite reference
   sensor_msgs::NavSatFix map_origin;
@@ -335,7 +335,7 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
       points[i].points.push_back(p);
       line_strip[i].points.push_back(p);
 
-      p.z = _h_d[i];
+      p.z = h_d[i];
       points[i].points.push_back(p);
       line_strip[i].points.push_back(p);
 
@@ -347,7 +347,7 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
       for (int j=0; j<droneWayPointsNED[i].size(); j++) {
         p.x = droneWayPointsNED[i][j].y();
         p.y = droneWayPointsNED[i][j].x();
-        p.z = _h_c;  
+        p.z = h_c;  
         points[i].points.push_back(p);
         line_strip[i].points.push_back(p);
       }       
@@ -355,7 +355,7 @@ void GcsServices::visualization_thread(QList<QList<QPointF>> _droneWayPointsNED,
       int l = droneWayPointsNED[i].size();
       p.x = droneWayPointsNED[i][l-1].y();
       p.y = droneWayPointsNED[i][l-1].x();
-      p.z = _h_d[i];
+      p.z = h_d[i];
       points[i].points.push_back(p);
       line_strip[i].points.push_back(p); 
       

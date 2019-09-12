@@ -55,7 +55,7 @@ class GcsServices {
         boost::shared_ptr<sensor_msgs::NavSatFix const> uav_coordiante_ptr; //pointer to uav coordinate message
         //
         std::thread vis_thread;
-        void visualization_thread(QList<QList<QPointF>> _droneWayPointsNED, QList<QList<QGeoCoordinate>> _droneWayPointsGeo, std::vector<int> _h_d, int _h_c);
+        void visualization_thread();
 
         int n; // number of uavs
         double h_c; //flight altitude
