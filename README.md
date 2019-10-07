@@ -57,3 +57,5 @@ git clone (repository URL)
 cd ~/(your catkin_ws)
 catkin_make
 ```
+
+## Run inspector_gcs
