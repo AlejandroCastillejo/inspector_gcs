@@ -32,6 +32,11 @@ Before the current package, some dependencies need to be installed.
    ```
    sudo apt-get install ros-kinetic-rostful
    ```
+
+ * Other ROS dependencies  
+   ```
+   sudo apt-get install ros-kinetic-geographic-msgs 
+   ```
    
  * Qt5 dependencies: 
     ```

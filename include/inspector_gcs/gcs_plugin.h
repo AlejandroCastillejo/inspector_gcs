@@ -47,6 +47,7 @@
 
 // Messages
 #include <inspector_gcs/UavList.h>
+#include <inspector_gcs/UalState.h>
 
 // TEST
 #include "sensor_msgs/PointCloud2.h"
@@ -55,11 +56,6 @@
 #include "sensor_msgs/Imu.h"
 #include "sensor_msgs/NavSatFix.h"
 
-#include <uav_abstraction_layer/ual.h>
-#include <uav_abstraction_layer/GoToWaypoint.h>
-#include <uav_abstraction_layer/Land.h>
-#include <uav_abstraction_layer/TakeOff.h>
-#include <uav_abstraction_layer/SetVelocity.h>
 
 namespace inspector_gcs
 {
@@ -104,7 +100,7 @@ protected:
   // ADL
   virtual void adl_state_cb(const std_msgs::String msg);
   // UAL //
-  virtual void ual_state_cb(const uav_abstraction_layer::State msg);
+  virtual void ual_state_cb(const inspector_gcs::UalState msg);
   virtual void pose_callback(const geometry_msgs::PoseStamped);
 
   // Comment in to signal that the plugin has a way to configure it
@@ -152,15 +148,6 @@ private:
     // UAL
   ros::Subscriber ual_state_sub, pose_sub, velocity_sub;
   
-  // UAL //
-  // ros::ServiceClient srvTakeOff, srvLand, srvGoToWaypoint, srvSetVelocity;
-  // uav_abstraction_layer::TakeOff take_off;
-  // uav_abstraction_layer::Land land;
-  // uav_abstraction_layer::GoToWaypoint go_to_waypoint;
-  // uav_abstraction_layer::SetVelocity set_velocity;
-  // geometry_msgs::TwistStamped vel;
-  // geometry_msgs::PoseStamped wp;
-
   int stby_action_service_count;
   int stop_service_count;
   int paused_state_action_service_count;

@@ -6,11 +6,10 @@ import roslib
 import json
 import os.path
 
-import uav_abstraction_layer.msg
+# import uav_abstraction_layer.msg
 import inspector_gcs.msg
 from inspector_gcs.srv import API_MissionFile, API_MissionCommand, API_GetTopic, API_GetTopicsList, StbyActionService, StopService, PausedStActionService
 from inspector_gcs.srv import StbyActionServiceRequest, PausedStActionServiceRequest #import defined requests
-# from inspector_gcs.msg import UavList
 
 class RostfulServices:
 

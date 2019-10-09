@@ -10,12 +10,15 @@ add_compile_options(-std=c++11 -fPIC)
 find_package(catkin REQUIRED COMPONENTS
   message_generation  
   roscpp
+  rospy
+  roslaunch
   roslint
   rqt_gui
   rqt_gui_cpp
   std_msgs
-  # euler_quaternion
-  uav_abstraction_layer
+  geometry_msgs
+  nav_msgs
+  geographic_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -33,7 +36,6 @@ Core
 Positioning
 Gui
 Qml
-# Quick
  Widgets
 )
 find_package(Qt5Gui CONFIG REQUIRED)
@@ -81,6 +83,7 @@ include_directories( ${CMAKE_BINARY_DIR} )
 add_message_files(
   FILES
   UavList.msg
+  UalState.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -146,10 +149,9 @@ catkin_package(
   INCLUDE_DIRS include
   INCLUDE_DIRS ${inspector_gcs_INCLUDE_DIRECTORIES}
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp rqt_gui rqt_gui_cpp std_msgs uav_abstraction_layer
+  CATKIN_DEPENDS roscpp rospy rqt_gui rqt_gui_cpp std_msgs nav_msgs geometry_msgs
 #  DEPENDS system_lib
 )
-
 
 set (inspector_gcs_SRCS
   src/gcs_plugin.cpp
@@ -192,7 +194,6 @@ include_directories(
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
     src/main.cpp src/get_from_json.cpp src/mission_builder.cpp src/camera_calc.cpp src/gcs_services.cpp src/QGCGeo.cc src/UTM.cpp
-    # src/get_from_json.cpp src/mission_builder.cpp src/QGCGeo.cc src/UTM.cpp
     ${inspector_gcs_SRCS}
     ${inspector_gcs_MOCS}
     ${inspector_gcs_UIS_H}

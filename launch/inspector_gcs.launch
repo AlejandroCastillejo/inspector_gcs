@@ -48,7 +48,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <param name="cameras_file_location" value="$(find inspector_gcs)/cameras.json"/>
     </node> -->
    
-   	<node pkg="rostful_launcher" type="run_rostful.py" name="run_rostful" output="screen" args="-c $(find inspector_gcs)/config/rostful.cfg" />
+   	<!-- <node pkg="rostful_launcher" type="run_rostful.py" name="run_rostful" output="screen" args="-c $(find inspector_gcs)/config/rostful.cfg" /> -->
+   	<node pkg="inspector_gcs" type="run_rostful.py" name="run_rostful" output="screen" args="-c $(find inspector_gcs)/config/rostful.cfg" />
 
 
 </launch>

@@ -67,13 +67,6 @@ void GcsPlugin::initPlugin(qt_gui_cpp::PluginContext &context)
   connect(ui_.pushButton_ResumeMission_2, SIGNAL(pressed()), this, SLOT(press_ResumeMission_2()));
   connect(ui_.pushButton_AbortMission_2, SIGNAL(pressed()), this, SLOT(press_AbortMission_2()));
   
-  // connect(ui_.uav_selection_Box, SIGNAL(currentIndexChanged(int index)), this, SLOT(on_uav_selection_Box_currentIndexChanged(int index)));
-    
-  //uavServices
-  // mission_srv = n_.serviceClient<inspector_gcs::MissionService>("/uav_1/mission_service");
-  // stby_action_srv = n_.serviceClient<inspector_gcs::StbyActionService>("/uav_1/stby_action_service");
-  // paused_st_action_srv = n_.serviceClient<inspector_gcs::PausedStActionService>("/uav_1/paused_state_action_service");
-  // stop_srv = n_.serviceClient<inspector_gcs::StopService>("/uav_1/stop_service");
   
   //GCS Services
   createMission_srv =n_.serviceClient<inspector_gcs::gcsCreateMission>("create_mission_service");
@@ -85,26 +78,6 @@ void GcsPlugin::initPlugin(qt_gui_cpp::PluginContext &context)
   // Inspector GCS // 
   ////////////////////////////////////////////////
 
-  // ros::start();
-  // CONNECT
-  // connect(ui_.pushButton, SIGNAL(pressed()), this, SLOT(click_pushButton()));
-  // connect(cloudUpdate, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
-
-  // connect(ui_.pushButton_takeOff, SIGNAL(pressed()), this, SLOT(press_takeOff()));
-  // connect(ui_.pushButton_land, SIGNAL(pressed()), this, SLOT(press_land()));
-  // connect(ui_.pushButton_goToWaypoint, SIGNAL(pressed()), this, SLOT(press_goToWaypoint()));
-  // connect(ui_.pushButton_setVelocity, SIGNAL(pressed()), this, SLOT(press_setVelocity()));
-  // SUBSCRIBERS
-  // UAL //
-  // srvTakeOff = n_.serviceClient<uav_abstraction_layer::TakeOff>("/uav_1/ual/take_off");
-  // srvLand = n_.serviceClient<uav_abstraction_layer::Land>("/uav_1/ual/land");
-  // srvGoToWaypoint = n_.serviceClient<uav_abstraction_layer::GoToWaypoint>("/uav_1/ual/go_to_waypoint");
-  // srvSetVelocity = n_.serviceClient<uav_abstraction_layer::SetVelocity>("/uav_1/ual/set_velocity");
-  // state_sub = n_.subscribe("/uav_1/ual/state", 0, &GcsPlugin::state_callback, this);
-  // pose_sub = n_.subscribe("/uav_1/ual/pose", 0, &GcsPlugin::pose_callback, this);
-  // velocity_sub = n_.subscribe("/uav_1/ual/velocity", 0, &GcsPlugin::velocity_callback, this);
-  // UAL //
-  // PUBLISHERS
 }
 
 
@@ -442,7 +415,7 @@ void GcsPlugin::press_AbortMission_2()
 
 // --------------------------------------------------------------------------
 // UAL //
-void GcsPlugin::ual_state_cb(const uav_abstraction_layer::State msg)
+void GcsPlugin::ual_state_cb(const inspector_gcs::UalState msg)
 {
   QString txt = QString::fromStdString(ual_states[msg.state]);
   // ui_.label_State->setText(txt);
@@ -472,84 +445,7 @@ void GcsPlugin::pose_callback(const geometry_msgs::PoseStamped msg)
   // ui_.getPoseOw->setText(QString::number(msg.pose.orientation.w, 'f', 2));
 }
 
-// void GcsPlugin::velocity_callback(const geometry_msgs::TwistStamped msg)
-// {
-//   ui_.getVelLx->setText(QString::number(msg.twist.linear.x, 'f', 2));
-//   ui_.getVelLy->setText(QString::number(msg.twist.linear.y, 'f', 2));
-//   ui_.getVelLz->setText(QString::number(msg.twist.linear.z, 'f', 2));
-//   ui_.getVelAx->setText(QString::number(msg.twist.angular.x, 'f', 2));
-//   ui_.getVelAy->setText(QString::number(msg.twist.angular.y, 'f', 2));
-//   ui_.getVelAz->setText(QString::number(msg.twist.angular.z, 'f', 2));
-// }
 
-// void GcsPlugin::press_takeOff()
-// {
-// ROS_INFO("take_off clicked" );
-// qDebug() << "take_off clicked" << endl;
-// std::cout << "take_off clicked" << endl;
-
-//   double height = ui_.setTakeOffHeight->text().toDouble();
-//   take_off.request.height = height;
-//   take_off.request.blocking = false;
-//   srvTakeOff.call(take_off);
-// }
-
-// void GcsPlugin::press_land()
-// {
-//   // land.request.twist.linear.x = 0.0;
-//   // land.request.twist.linear.y = 0.0;
-//   // land.request.twist.linear.z = 0.0;
-//   // land.request.twist.angular.x = 0.0;
-//   // land.request.twist.angular.y = 0.0;
-//   // land.request.twist.angular.z = 0.0;
-//   land.request.blocking = false;
-//   srvLand.call(land);
-// }
-
-// void GcsPlugin::press_goToWaypoint()
-// {
-//   double pPx = ui_.setPosePx->text().toDouble();
-//   double pPy = ui_.setPosePy->text().toDouble();
-//   double pPz = ui_.setPosePz->text().toDouble();
-//   double pOx = ui_.setPoseOx->text().toDouble();
-//   double pOy = ui_.setPoseOy->text().toDouble();
-//   double pOz = ui_.setPoseOz->text().toDouble();
-//   double pOw = ui_.setPoseOw->text().toDouble();
-
-//   wp.header.frame_id = "map";
-//   wp.pose.position.x = pPx;
-//   wp.pose.position.y = pPy;
-//   wp.pose.position.z = pPz;
-//   wp.pose.orientation.x = pOx;
-//   wp.pose.orientation.y = pOy;
-//   wp.pose.orientation.z = pOz;
-//   wp.pose.orientation.w = pOw;
-
-//   go_to_waypoint.request.waypoint = wp;
-//   srvGoToWaypoint.call(go_to_waypoint);
-// }
-
-// void GcsPlugin::press_setVelocity()
-// {
-//   double vLx = ui_.setVelLx->text().toDouble();
-//   double vLy = ui_.setVelLy->text().toDouble();
-//   double vLz = ui_.setVelLz->text().toDouble();
-//   double vAx = ui_.setVelAx->text().toDouble();
-//   double vAy = ui_.setVelAy->text().toDouble();
-//   double vAz = ui_.setVelAz->text().toDouble();
-
-//   vel.header.frame_id = "map";
-//   vel.twist.linear.x = vLx;
-//   vel.twist.linear.y = vLy;
-//   vel.twist.linear.z = vLz;
-//   vel.twist.angular.x = vAx;
-//   vel.twist.angular.y = vAy;
-//   vel.twist.angular.z = vAz;
-
-//   set_velocity.request.velocity = vel;
-//   srvSetVelocity.call(set_velocity);
-// }
-// UAL //
 
 // --------------------------------------------------------------------------
 
