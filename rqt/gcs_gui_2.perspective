@@ -55,7 +55,7 @@
               "keys": {
                 "rviz_config_file": {
                   "type": "repr",
-                  "repr": "u''"
+                  "repr": "u'~/catkin_ws/src/inspector_gcs/launch/map_visualization.rviz'"
                 },
                 "hide_menu": {
                   "type": "repr",

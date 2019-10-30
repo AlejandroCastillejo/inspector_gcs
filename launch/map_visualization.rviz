@@ -42,7 +42,6 @@ Visualization Manager:
       Frame Convention: XYZ -> ENU
       Name: AerialMapDisplay
       Object URI: https://tile.openstreetmap.org/{z}/{x}/{y}.png
-      Robot frame: map
       Topic: /gps/fix
       Value: true
       Zoom: 16
@@ -66,7 +65,7 @@ Visualization Manager:
       Marker Topic: /visualization_marker_1
       Name: Marker
       Namespaces:
-        points: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -166,25 +165,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1852.43176
+      Distance: 1556.50537
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -619.276855
-        Y: 1042.40125
-        Z: -427.973785
+        X: 1216.44958
+        Y: 410.889526
+        Z: -415.273712
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.405398965
+      Pitch: 0.350399017
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.15356255
+      Yaw: 3.43352413
     Saved: ~
 Window Geometry:
   Displays:
