@@ -4,6 +4,7 @@
 // C++
 #include <string>
 #include <thread>
+#include <math.h>
 // ROS
 #include <ros/ros.h>
 #include <ros/package.h>
@@ -55,6 +56,8 @@
 #include <geometry_msgs/TwistStamped.h>
 #include "sensor_msgs/Imu.h"
 #include "sensor_msgs/NavSatFix.h"
+#include "sensor_msgs/BatteryState.h"
+
 
 
 namespace inspector_gcs
@@ -97,6 +100,8 @@ protected:
   virtual void gps_pos_cb(const sensor_msgs::NavSatFix);
   // GCS
   virtual void uav_list_cb(const inspector_gcs::UavList);
+  virtual void battery_cb(const sensor_msgs::BatteryState);
+
   // ADL
   virtual void adl_state_cb(const std_msgs::String msg);
   // UAL //
@@ -145,6 +150,7 @@ private:
   ros::Subscriber gps_pos_sub;
     // ADL
   ros::Subscriber adl_state_sub;
+  ros::Subscriber battery_sub;
     // UAL
   ros::Subscriber ual_state_sub, pose_sub, velocity_sub;
   

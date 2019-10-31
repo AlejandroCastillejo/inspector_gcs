@@ -137,6 +137,8 @@ void GcsPlugin::guiThread()
     gps_pos_sub = n_.subscribe(uav_id + "/dji_sdk/gps_position", 0, &GcsPlugin::gps_pos_cb, this);
     ual_state_sub = n_.subscribe(uav_id + "/ual/state", 0, &GcsPlugin::ual_state_cb, this);
     adl_state_sub = n_.subscribe(uav_id + "/adl_state", 0, &GcsPlugin::adl_state_cb, this);
+    battery_sub = n_.subscribe(uav_id + "/battery_percentage", 0, &GcsPlugin::battery_cb, this);
+
 
     if (uav_list.count() == 0) {
       ui_.pushButton_CreateMission->setVisible(false);
@@ -404,6 +406,12 @@ void GcsPlugin::press_AbortMission_2()
   // }
 }
 
+void GcsPlugin::battery_cb(const sensor_msgs::BatteryState msg)
+{
+  int percentage = msg.percentage * 100;
+  ui_.progressBar_Battery->setValue(percentage);
+}
+
 // void GcsPlugin::on_uav_selection_Box_currentIndexChanged(int index)
 // {
 //   std::string uav_id = ui_.uav_selection_Box->currentText().toStdString();
@@ -436,6 +444,7 @@ void GcsPlugin::gps_pos_cb(const sensor_msgs::NavSatFix msg)
 
 void GcsPlugin::pose_callback(const geometry_msgs::PoseStamped msg)
 {
+  double q_x, q_y, q_z, q_w, siny_cosp, cosy_cosp, yaw;
   ui_.getPosePx->setText(QString::number(msg.pose.position.x, 'f', 2));
   ui_.getPosePy->setText(QString::number(msg.pose.position.y, 'f', 2));
   ui_.getPosePz->setText(QString::number(msg.pose.position.z, 'f', 2));
@@ -443,6 +452,14 @@ void GcsPlugin::pose_callback(const geometry_msgs::PoseStamped msg)
   // ui_.getPoseOy->setText(QString::number(msg.pose.orientation.y, 'f', 2));
   // ui_.getPoseOz->setText(QString::number(msg.pose.orientation.z, 'f', 2));
   // ui_.getPoseOw->setText(QString::number(msg.pose.orientation.w, 'f', 2));
+  q_x = msg.pose.orientation.x;
+  q_y = msg.pose.orientation.y;
+  q_z = msg.pose.orientation.z;
+  q_w = msg.pose.orientation.w;
+  siny_cosp = +2.0 * (q_w * q_z + q_x * q_y);
+  cosy_cosp = +1.0 - 2.0 * (q_y * q_y + q_z * q_z);  
+  yaw = atan2(siny_cosp, cosy_cosp) * 180 / 3.14159265;
+  ui_.getPoseYaw->setText(QString::number(yaw, 'd', 2));
 }
 
 
