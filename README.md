@@ -64,3 +64,7 @@ catkin_make
 ```
 
 ## Run inspector_gcs
+The following command runs the gcs main node, the GUI and the API REST server node:
+```
+roslaunch inspector_gcs inspector_gcs.launch 
+```

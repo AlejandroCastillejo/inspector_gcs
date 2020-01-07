@@ -20,7 +20,7 @@ class SqlManager:
         self.telemetry_file = self.desktop + '/georefenenced_rgb_images_2019-06-13.csv'
         mission_file = "/home/alejandro/catkin_ws/src/inspector_gcs/json_files/archivo-mision.json"
 
-        db = sqlite3.connect('example2.db')
+        db = sqlite3.connect('example3.db')
 
         c = db.cursor()
         
@@ -89,10 +89,10 @@ class SqlManager:
                     # print(row)
                     c.execute(''' 
                     INSERT INTO sensor_entries(uuid, timestamp, value) VALUES(?,?,?) ''', 
-                    (devices_uuids["DJI SDK UAV 1"]["lat_uuid"], row[1], row[2]) )
+                    (devices_uuids["DJI SDK UAV 1"]["lat_uuid"], float(row[1]) * 10**-9, row[2]) )
                     c.execute(''' 
                     INSERT INTO sensor_entries(uuid, timestamp, value) VALUES(?,?,?) ''', 
-                    (devices_uuids["DJI SDK UAV 1"]["lon_uuid"], row[1], row[3]) )
+                    (devices_uuids["DJI SDK UAV 1"]["lon_uuid"], float(row[1]) * 10**-9, row[3]) )
                     # c.execute(''' 
                     # INSERT INTO telemetry_entries(latitude, longitude, altitude) VALUES(?,?,?) ''', 
                     # (row[2], row[3], row[4]) )
