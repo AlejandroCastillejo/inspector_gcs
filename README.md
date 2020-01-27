@@ -4,7 +4,7 @@ ROS-based software for PV plants inspections. The project is divided into ground
 
 This is the ground segment, to be installed on the ground control station.
 
-You can find the aerial segment package [here](http://olaf.grupotsk.com:8080/inspector/us/inspector_software_uav)
+You can find the aerial segment package [here](https://github.com/AlejandroCastillejo/inspector_software_uav)
 
 <br/>
 
