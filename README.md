@@ -6,6 +6,7 @@ This is the ground segment, to be installed on the ground control station.
 
 You can find the aerial segment package [here](http://olaf.grupotsk.com:8080/inspector/us/inspector_software_uav)
 
+<br/>
 
 ## 
 
@@ -63,8 +64,27 @@ cd ~/(your catkin_ws)
 catkin_make
 ```
 
+<br/>
+
 ## Run inspector_gcs
 The following command runs the gcs main node, the GUI and the API REST server node:
 ```
 roslaunch inspector_gcs inspector_gcs.launch 
 ```
+
+<br/>
+
+## GUI Screenshots
+Once the software is launched you will see the following:  
+<br/>
+![GUI started](images/GUI_screenshot_1.png) 
+
+<br/><br/><br/> 
+The following image shows a screenshot of the GUI after two UAVs have been linked and the mission has been created.  
+<br/>
+![GUI with two uav's linked and mission created](images/GUI_screenshot_2.png) 
+ 
+<br/><br/><br/>
+You can also see the mission paths over a map by pushing the button "Open Map View":  
+<br/>
+![GUI map view](images/GUI_screenshot_3.png)
