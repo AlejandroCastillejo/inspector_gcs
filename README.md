@@ -55,6 +55,12 @@ Before the current package, some dependencies need to be installed.
    sudo pip install pandas
    ```
 
+ * rviz-satellite ((optional) required for satellite map view)
+   ```
+   cd ~/(your catkin_ws)/src
+   git clone https://github.com/gareth-cross/rviz_satellite.git
+   ```
+
 ### inspector_gcs package
 To conclude, clone this repository into your catkin workspace and compile:
 ```
