@@ -4,7 +4,7 @@ import rospy
 from sensor_msgs.msg import NavSatFix
 
 def test_publisher():
-    uav_gps_pos_pub_1 = rospy.Publisher('uav_1/dji_sdk/gps_position', NavSatFix, queue_size=10)
+    uav_gps_pos_pub_1 = rospy.Publisher('uav1/dji_sdk/gps_position', NavSatFix, queue_size=10)
     uav_gps_pos_pub_2 = rospy.Publisher('uav2/dji_sdk/gps_position', NavSatFix, queue_size=10)
     rospy.init_node('test_publisher')
 

@@ -20,6 +20,11 @@
 #include <rqt_gui_cpp/plugin.h>
 #include <inspector_gcs/ui_gcs_plugin.h>
 #include <QWidget>
+#include <QThread> 
+#include <QtCore>
+#include <QDebug>
+// #include <QCoreAplication>
+#include <QtConcurrent/QtConcurrent>
 
 #include <QBasicTimer>
 #include <QString>
@@ -62,10 +67,19 @@
 
 namespace inspector_gcs
 {
+  class WorkerThread : public QThread
+  {
+    Q_OBJECT
+    void run() override;
+
+  signals:
+    void updateButtons();
+  };
 
 class GcsPlugin : public rqt_gui_cpp::Plugin
 {
   Q_OBJECT
+  // QThread guiQThread;
 
 public:
   GcsPlugin();
@@ -74,6 +88,8 @@ public:
   virtual void saveSettings(qt_gui_cpp::Settings &plugin_settings, qt_gui_cpp::Settings &instance_settings) const;
   virtual void restoreSettings(const qt_gui_cpp::Settings &plugin_settings, const qt_gui_cpp::Settings &instance_settings);
   Ui::GcsPluginWidget ui_;
+
+
   // --------------------------------------------------------------------------
 protected slots:
 
@@ -128,6 +144,8 @@ private:
   std::thread gui_thread;
   void guiThread();
 
+  // QThread guiQThread;
+
   //////////////////////////////////////////
   // Inspector GCS //
   ros::ServiceClient mission_srv, stby_action_srv, paused_st_action_srv, stop_srv;
@@ -166,7 +184,11 @@ private:
                                         "Flying Manual",
                                         "Landed" };
   // ros::Publisher resolution;
+
+signals:
+  void start();
   // --------------------------------------------------------------------------
 };
 } // namespace inspector_gcs
+
 #endif // inspector_gcs_plugin_H

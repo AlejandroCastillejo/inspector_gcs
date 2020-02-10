@@ -1,12 +1,12 @@
 #include "inspector_gcs/gcs_plugin.h"
 #include <inspector_gcs/gcs_services.h>
+#include <QtCore>
 
 
 namespace inspector_gcs
 {
-// GetFromJson g_Json;
-// MissionBuilder mb;
-// QList<QGeoCoordinate> PolygonCoordinates;
+
+
 
 GcsPlugin::GcsPlugin()
     : rqt_gui_cpp::Plugin(), widget_(0)
@@ -15,6 +15,18 @@ GcsPlugin::GcsPlugin()
 
   // give QObjects reasonable names
   setObjectName("GcsPlugin");
+}
+
+
+void WorkerThread::run() 
+{
+  std::cout << "WorkerThread running" << std::endl;
+
+  while(ros::ok){
+    // std::cout << "updateButtons" << std::endl;
+    emit updateButtons();
+    ros::Duration(1).sleep();
+  }
 }
 
 void GcsPlugin::initPlugin(qt_gui_cpp::PluginContext &context)
@@ -27,7 +39,6 @@ void GcsPlugin::initPlugin(qt_gui_cpp::PluginContext &context)
   widget_ = new QWidget();
   // extend the widget with all attributes and children from UI file
   ui_.setupUi(widget_);
-  // cloudUpdate = new cloudSignal(ui_);
 
   // add widget to the user interface
   context.addWidget(widget_);
@@ -49,7 +60,12 @@ void GcsPlugin::initPlugin(qt_gui_cpp::PluginContext &context)
   mission_created = false;
   
     // start thread
-  gui_thread = std::thread(&GcsPlugin::guiThread, this);
+  // gui_thread = std::thread(&GcsPlugin::guiThread, this);
+
+  WorkerThread *workerThread = new WorkerThread();
+  connect(workerThread, &WorkerThread::updateButtons, this, &GcsPlugin::guiThread);
+  connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
+  workerThread->start();
 
     // CONNECT
   connect(ui_.pushButton_EditMissionFile, SIGNAL(pressed()), this, SLOT(press_EditMissionFile()));
@@ -69,8 +85,8 @@ void GcsPlugin::initPlugin(qt_gui_cpp::PluginContext &context)
   
   
   //GCS Services
-  createMission_srv =n_.serviceClient<inspector_gcs::gcsCreateMission>("create_mission_service");
-  sendMission_srv =n_.serviceClient<inspector_gcs::gcsSendMission>("send_mission_service");
+  createMission_srv = n_.serviceClient<inspector_gcs::gcsCreateMission>("create_mission_service");
+  sendMission_srv = n_.serviceClient<inspector_gcs::gcsSendMission>("send_mission_service");
 
   //GCS Subscribers
   uav_list_sub = n_.subscribe("uav_list", 0, &GcsPlugin::uav_list_cb,this);
@@ -101,27 +117,6 @@ void GcsPlugin::restoreSettings(const qt_gui_cpp::Settings &plugin_settings,
 }
 
 
-// void cloudSignal::setValue(int value)
-// {
-//   emit valueChanged(value);
-
-//   /*if ((ros::Time::now().toSec() - 1.0) >= updateItem)
-//   {
-//     ROS_INFO("1.0");
-//     for (int i = 0; i < ui_.list_movil->count(); ++i)
-//     {
-//       //QListWidgetItem *item = ui_.list_movil->item(i);
-//       //Do stuff!
-//       //item->setText(QString("-"));
-//       //ui_.list_movil->item(i)->setText(QString::number(updateItem, 'f', 0));
-//     }
-//     //ui_.list_movil->item(0)->setText(QString::number(ros::Time::now().toSec()));
-//     updateItem = ros::Time::now().toSec();
-//   }*/
-//   //ui_.list_movil->update();
-//   //QApplication::processEvents();
-// }
-
 //--------
 // Inspector GCS //
 
@@ -130,7 +125,7 @@ void GcsPlugin::guiThread()
   // ROS_INFO("guiThread");
   std::string uav_id;
 
-  while (ros::ok()){
+  // while (ros::ok()){
     uav_id = ui_.uav_selection_Box->currentText().toStdString();
 
     pose_sub = n_.subscribe(uav_id + "/ual/pose", 0, &GcsPlugin::pose_callback, this);
@@ -138,7 +133,6 @@ void GcsPlugin::guiThread()
     ual_state_sub = n_.subscribe(uav_id + "/ual/state", 0, &GcsPlugin::ual_state_cb, this);
     adl_state_sub = n_.subscribe(uav_id + "/adl_state", 0, &GcsPlugin::adl_state_cb, this);
     battery_sub = n_.subscribe(uav_id + "/battery_percentage", 0, &GcsPlugin::battery_cb, this);
-
 
     if (uav_list.count() == 0) {
       ui_.pushButton_CreateMission->setVisible(false);
@@ -186,7 +180,6 @@ void GcsPlugin::guiThread()
         ui_.pushButton_AbortMission_2->setVisible(false);
       }
 
-
       stby_action_service_count = 0;
       stop_service_count = 0;
       paused_state_action_service_count = 0;
@@ -217,8 +210,8 @@ void GcsPlugin::guiThread()
         ui_.pushButton_AbortMission->setVisible(false);
       }
     }
-    ros::Duration(0.5).sleep(); // sleep for half a second
-  }
+    // ros::Duration(0.5).sleep();
+  // }
 }
 
 void GcsPlugin::uav_list_cb(const inspector_gcs::UavList msg)
@@ -462,20 +455,9 @@ void GcsPlugin::pose_callback(const geometry_msgs::PoseStamped msg)
   ui_.getPoseYaw->setText(QString::number(yaw, 'd', 2));
 }
 
-
-
 // --------------------------------------------------------------------------
 
-/*bool hasConfiguration() const
-{
-  return true;
-}
-
-void triggerConfiguration()
-{
-  // Usually used to open a dialog to offer the user a set of configuration
-}*/
-
 } // namespace inspector_gcs
+
 //PLUGINLIB_DECLARE_CLASS(inspector_gcs, GcsPlugin, inspector_gcs::GcsPlugin, rqt_gui_cpp::Plugin)
 PLUGINLIB_EXPORT_CLASS(inspector_gcs::GcsPlugin, rqt_gui_cpp::Plugin)
