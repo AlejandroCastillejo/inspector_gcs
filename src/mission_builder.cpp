@@ -336,6 +336,17 @@ std::vector<geographic_msgs::GeoPath> MissionBuilder::_createMissionPathsGeo(QLi
     return missionPaths;
 }
 
+void MissionBuilder::_changeMissionAltitude(std::vector<geographic_msgs::GeoPath>& vectorPaths, std::vector<double> h_barrido) {
+    std::cout << "change mission altitudes" << std::endl;
+    int size = vectorPaths.size();
+    std::cout << "size: " << size << std::endl;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < vectorPaths[i].poses.size(); j++) {
+            vectorPaths[i].poses[j].pose.position.altitude = h_barrido[i];
+        }   
+    }
+}
+
 
 double MissionBuilder::_wpsDistance (QPointF point1, QPointF point2) {
     double dx = point2.x() - point1.x();

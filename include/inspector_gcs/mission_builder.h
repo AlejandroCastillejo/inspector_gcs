@@ -20,6 +20,8 @@ class MissionBuilder {
         void _heightDistribution(int nDrones, std::vector<int>& h_d, int h_mission, int h_minima, int d_seg);
         std::vector<nav_msgs::Path> _createMissionPaths(QList<QList<QPointF>> droneWayPoints, std::vector<int> h_posic, int h_barrido);
         std::vector<geographic_msgs::GeoPath> _createMissionPathsGeo(QList<QList<QGeoCoordinate>> droneWayPoints, std::vector<int> h_posic, int h_barrido);
+        void _changeMissionAltitude(std::vector<geographic_msgs::GeoPath>& vectorPaths, std::vector<double> h_barrido);
+
 
         enum EntryLocation {
             EntryLocationFirst,

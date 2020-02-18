@@ -34,6 +34,17 @@ double GetFromJson::GetFlightAltitude() {
   return mission_js["flight characteristics"]["flight altitude"];
 };
 
+bool GetFromJson::DifferentFlightAltitudes() {
+  // return mission_js["flight characteristics"]["flight altitude"];
+  if (mission_js["flight characteristics"]["diferent flight altitudes"] == "True") {return true;}
+  else {return false;}
+};
+
+std::vector<double> GetFromJson::GetDifferentFlightAltitudes() {
+  return mission_js["flight characteristics"]["list of flight altitudes"];
+};
+
+
 double GetFromJson::GetFlightDirection() {
   return mission_js["flight characteristics"]["flight direction"];
 };

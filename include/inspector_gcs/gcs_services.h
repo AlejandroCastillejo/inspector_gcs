@@ -59,6 +59,7 @@ class GcsServices {
 
         int n; // number of uavs
         double h_c; //flight altitude
+        std::vector<double> list_h_c; // vector with different flight altitudes
         std::vector<int> h_d; // positioning heigth vector
 
         std::vector<std::string> uav_list;
@@ -75,6 +76,7 @@ class GcsServices {
 
         std::vector<nav_msgs::Path> missionPaths;
         std::vector<geographic_msgs::GeoPath> missionPathsGeo;
+        std::vector<geographic_msgs::GeoPath>* p_missionPathsGeo;
 
         bool mission_created = false;
 

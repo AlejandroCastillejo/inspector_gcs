@@ -24,6 +24,8 @@ class GetFromJson {
         // GetPlantName();
         bool GetCoordinates(QList<QGeoCoordinate>& _PolygonCoordinates);
         double GetFlightAltitude();
+        bool DifferentFlightAltitudes();
+        std::vector<double> GetDifferentFlightAltitudes();
         // bool GetFlightCharacteristics();
         double GetFlightDirection();
         double GetLongitudinalOverlapMin();

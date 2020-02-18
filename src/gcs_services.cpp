@@ -141,6 +141,12 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
   missionPaths = mission_builder._createMissionPaths(droneWayPointsNED, h_d, h_c);
   missionPathsGeo = mission_builder._createMissionPathsGeo(droneWayPointsGeo, h_d, h_c);
   
+  if (get_from_json.DifferentFlightAltitudes()) {
+    list_h_c = get_from_json.GetDifferentFlightAltitudes();
+    mission_builder._changeMissionAltitude (missionPathsGeo, list_h_c);
+    // std::cout << missionPathsGeo[0].poses[0] << std::endl;
+  }
+  
   qDebug()<<endl;
   qDebug()<< "drone waypoints geo" << endl << droneWayPointsGeo << endl;
   qDebug()<< "drone waypoints NED" << endl << droneWayPointsNED << endl;

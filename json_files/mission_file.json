@@ -19,15 +19,15 @@
     }
   ],
   "flight characteristics": {
-	"take off": {
-      "latitude": 43.520345,
-      "longitude": -5.607823
-    },
-	"landing": {
-      "latitude": 43.520345,
-      "longitude": -5.607823
-    },
-	"flight direction": 218,
+	  "take off": {
+        "latitude": 43.520345,
+        "longitude": -5.607823
+      },
+	  "landing": {
+        "latitude": 43.520345,
+        "longitude": -5.607823
+      },
+	  "flight direction": 218,
     "flight altitude": 30,
     "longitudinal overlap (minimum)": 0.6,
     "longitudinal overlap (ideal)": 0.8,
@@ -35,7 +35,9 @@
     "transverse  overlap (ideal)": 0.6,
     "verticality": 3,
     "drift": 3,
-    "height variation over terrain": 3
+    "height variation over terrain": 3,
+    "diferent flight altitudes": "True",
+    "list of flight altitudes": [31, 42]
   },
   "devices": [
     {
