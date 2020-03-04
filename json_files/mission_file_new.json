@@ -2,32 +2,20 @@
   "plant":"Utrera",
   "perimeter": [
     {
-      "latitude": 39.165203,
-      "longitude": -5.640041
+      "latitude": 37.356571,
+      "longitude": -6.126776
     },
     {
-      "latitude": 39.165586,
-      "longitude": -5.639086
+      "latitude": 37.357145,
+      "longitude": -6.126677
     },
     {
-      "latitude": 39.165524,
-      "longitude": -5.638405
+      "latitude": 37.357155,
+      "longitude": -6.126382
     },
     {
-      "latitude": 39.165873,
-      "longitude": -5.637520
-    },
-    {
-      "latitude": 39.165320,
-      "longitude":  -5.637016
-    },
-    {
-      "latitude": 39.164038,
-      "longitude": -5.639065
-    },
-    {
-      "latitude": 39.165203,
-      "longitude": -5.640041
+      "latitude": 37.356690,
+      "longitude": -6.126472
     }
   ],
   "flight characteristics": {
@@ -39,7 +27,7 @@
         "latitude": 43.520345,
         "longitude": -5.607823
       },
-	  "flight direction": 0,
+	  "flight direction": 218,
     "flight altitude": 30,
     "longitudinal overlap (minimum)": 0.6,
     "longitudinal overlap (ideal)": 0.8,

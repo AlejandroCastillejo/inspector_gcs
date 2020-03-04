@@ -15,8 +15,10 @@ def test_publisher():
         # gps_position_1.longitude =  -5.872402
         # gps_position_1.latitude = 37.091136
         # gps_position_1.longitude =  -5.872402
-        gps_position_1.latitude = 37.3565
-        gps_position_1.longitude =  -6.1264
+        # gps_position_1.latitude = 37.3565
+        # gps_position_1.longitude =  -6.1264
+        gps_position_1.latitude = 39.165511  #Madrigalejo
+        gps_position_1.longitude = -5.638495
 
         uav_gps_pos_pub_1.publish(gps_position_1)
         gps_position_2.latitude = 37.091241
