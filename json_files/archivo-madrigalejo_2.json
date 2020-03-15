@@ -1,53 +1,29 @@
 {
-  "plant":"Utrera",
+  "plant":"Madrigalejo 2",
   "perimeter": [
     {
-      "latitude": 39.165203,
-      "longitude": -5.640041
+      "latitude": 39.166050,
+      "longitude": -5.635561
     },
     {
-      "latitude": 39.165586,
-      "longitude": -5.639086
+      "latitude": 39.166973,
+      "longitude": -5.636499
     },
     {
-      "latitude": 39.165524,
-      "longitude": -5.638405
+      "latitude": 39.167705,
+      "longitude":  -5.636467
     },
     {
-      "latitude": 39.165873,
-      "longitude": -5.637520
+      "latitude": 39.168445,
+      "longitude": -5.635008
     },
     {
-      "latitude": 39.165320,
-      "longitude":  -5.637016
+      "latitude": 39.168370,
+      "longitude":  -5.633924
     },
     {
-      "latitude": 39.166139,
-      "longitude": -5.635664
-    },
-    {
-      "latitude": 39.167395,
-      "longitude": -5.636946
-    },
-    {
-      "latitude": 39.168468,
-      "longitude": -5.634961
-    },
-    {
-      "latitude": 39.168447,
-      "longitude": -5.633985
-    },
-    {
-      "latitude": 39.166717,
-      "longitude": -5.633803
-    },
-    {
-      "latitude": 39.164038,
-      "longitude": -5.639065
-    },
-    {
-      "latitude": 39.165203,
-      "longitude": -5.640041
+      "latitude": 39.166706,
+      "longitude":  -5.633763
     }
   ],
   "flight characteristics": {
@@ -59,7 +35,7 @@
         "latitude": 43.520345,
         "longitude": -5.607823
       },
-	  "flight direction": 0,
+	  "flight direction": -45,
     "flight altitude": 30,
     "longitudinal overlap (minimum)": 0.6,
     "longitudinal overlap (ideal)": 0.8,

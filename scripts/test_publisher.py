@@ -17,12 +17,14 @@ def test_publisher():
         # gps_position_1.longitude =  -5.872402
         # gps_position_1.latitude = 37.3565
         # gps_position_1.longitude =  -6.1264
-        gps_position_1.latitude = 39.165511  #Madrigalejo
-        gps_position_1.longitude = -5.638495
+        gps_position_1.latitude = 39.166226  #Madrigalejo
+        gps_position_1.longitude = -5.638087
+        gps_position_2.latitude = 39.16622 
+        gps_position_2.longitude = -5.63808
 
         uav_gps_pos_pub_1.publish(gps_position_1)
-        gps_position_2.latitude = 37.091241
-        gps_position_2.longitude =  -5.872474
+        # gps_position_2.latitude = 37.091241
+        # gps_position_2.longitude =  -5.872474
         uav_gps_pos_pub_2.publish(gps_position_2)
         rospy.sleep(1)
 

@@ -115,6 +115,7 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
 
   // CONVERT WAYPOINTS TO GEOCOORDINATES
   QGeoCoordinate tangentOrigin = PolygonCoordinates[0];
+
   QList<QGeoCoordinate> idroneWayPointsGeo;
   QGeoCoordinate coord;
   qDebug() << "tangent origin" << tangentOrigin << endl;
@@ -144,8 +145,12 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
   if (get_from_json.DifferentFlightAltitudes()) {
     list_h_c = get_from_json.GetDifferentFlightAltitudes();
     mission_builder._changeMissionAltitude (missionPathsGeo, list_h_c);
-    // std::cout << missionPathsGeo[0].poses[0] << std::endl;
   }
+  else {
+    for (int i = 0; i < n; i++) {
+      list_h_c.push_back(h_c);
+    }
+   }
   
   qDebug()<<endl;
   qDebug()<< "drone waypoints geo" << endl << droneWayPointsGeo << endl;
@@ -264,6 +269,29 @@ void GcsServices::visualization_thread()
     convertGeoToNed(BaseCoordinate, PolygonCoordinates[0], &localBaseCoordinate[i].x, &localBaseCoordinate[i].y, &localBaseCoordinate[i].z);
   }
 
+  //static transform
+  // tf2_ros::StaticTransformBroadcaster static_broadcaster[n];
+  tf2_ros::StaticTransformBroadcaster static_broadcaster_1;
+  tf2_ros::StaticTransformBroadcaster static_broadcaster_2;
+  geometry_msgs::TransformStamped static_transform[n];
+  for (int i = 0; i < n; i++) {
+    static_transform[i].header.stamp = ros::Time::now();
+    static_transform[i].header.frame_id = "map";
+    static_transform[i].child_frame_id = "uav" + std::to_string(i+1);
+    static_transform[i].transform.translation.x = localBaseCoordinate[i].y;
+    static_transform[i].transform.translation.y = localBaseCoordinate[i].x;
+    static_transform[i].transform.translation.z = 0;
+    static_transform[i].transform.rotation.x = 0;
+    static_transform[i].transform.rotation.y = 0;
+    static_transform[i].transform.rotation.z = 0;
+    static_transform[i].transform.rotation.w = 1;
+
+    // static_broadcaster[i].sendTransform(static_transform[i]);
+  }
+    static_broadcaster_1.sendTransform(static_transform[0]);
+    // static_broadcaster_2.sendTransform(static_transform[1]);
+
+
   while (ros::ok())
   {
     map_origin_pub.publish(map_origin);
@@ -353,7 +381,8 @@ void GcsServices::visualization_thread()
       for (int j=0; j<droneWayPointsNED[i].size(); j++) {
         p.x = droneWayPointsNED[i][j].y();
         p.y = droneWayPointsNED[i][j].x();
-        p.z = h_c;  
+        p.z = list_h_c[i];  
+        // p.z = h_c;  
         points[i].points.push_back(p);
         line_strip[i].points.push_back(p);
       }       

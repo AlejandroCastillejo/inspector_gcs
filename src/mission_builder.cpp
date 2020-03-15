@@ -7,6 +7,7 @@ void MissionBuilder::_buildTransects(QGeoCoordinate BaseCoordinate, QList<QGeoCo
 {
     QList<QPointF> polygonPoints;
     QGeoCoordinate tangentOrigin = _PolygonCoordinates[0];
+
     for (int i=0; i<_PolygonCoordinates.count(); i++) {
         double y, x, down;
         QGeoCoordinate vertex = _PolygonCoordinates[i];

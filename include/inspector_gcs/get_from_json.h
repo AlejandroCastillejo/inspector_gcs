@@ -1,7 +1,8 @@
 #ifndef GET_FROM_JSON_H
 #define GET_FROM_JSON_H
 
-#include <json.hpp> // single-include file for json parsing
+// #include <json.hpp> // single-include file for json parsing
+#include <nlohmann/json.hpp> // single-include file for json parsing
 #include <fstream>
 #include <iostream>
 

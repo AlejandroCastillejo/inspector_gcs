@@ -35,9 +35,21 @@ double GetFromJson::GetFlightAltitude() {
 };
 
 bool GetFromJson::DifferentFlightAltitudes() {
-  // return mission_js["flight characteristics"]["flight altitude"];
-  if (mission_js["flight characteristics"]["diferent flight altitudes"] == "True") {return true;}
-  else {return false;}
+  try {
+    if (mission_js["flight characteristics"].contains("diferent flight altitudes")) {
+      std::cout << "mission file contains 'diferent flight altitudes'" << std::endl;
+      if (mission_js["flight characteristics"]["diferent flight altitudes"] == "True") {return true;}
+      else {return false;}
+    }
+    else {
+      std::cout << "mission file doesn't contain 'diferent flight altitudes'" << std::endl;
+      return false;
+    }
+  }
+  catch (const std::exception e) {
+    std::cout << "Exception: " << e.what() << std::endl;
+    return false;
+  }
 };
 
 std::vector<double> GetFromJson::GetDifferentFlightAltitudes() {

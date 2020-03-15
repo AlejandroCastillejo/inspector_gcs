@@ -1,5 +1,5 @@
 {
-  "plant":"Utrera",
+  "plant":"Madrigalejo 1",
   "perimeter": [
     {
       "latitude": 39.165203,
@@ -10,24 +10,24 @@
       "longitude": -5.639086
     },
     {
-      "latitude": 39.165524,
-      "longitude": -5.638405
+      "latitude": 39.165383, 
+      "longitude": -5.638738
     },
     {
-      "latitude": 39.165873,
-      "longitude": -5.637520
+      "latitude": 39.165961,
+      "longitude": -5.637367
     },
     {
-      "latitude": 39.165320,
-      "longitude":  -5.637016
+      "latitude": 39.164946, 
+      "longitude":  -5.637273
     },
     {
       "latitude": 39.164038,
       "longitude": -5.639065
     },
     {
-      "latitude": 39.165203,
-      "longitude": -5.640041
+      "latitude": 39.164022,
+      "longitude": -5.640034
     }
   ],
   "flight characteristics": {
@@ -39,7 +39,7 @@
         "latitude": 43.520345,
         "longitude": -5.607823
       },
-	  "flight direction": 0,
+	  "flight direction": -45,
     "flight altitude": 30,
     "longitudinal overlap (minimum)": 0.6,
     "longitudinal overlap (ideal)": 0.8,

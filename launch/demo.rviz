@@ -33,7 +33,7 @@ Visualization Manager:
   Class: ""
   Displays:
     - Alpha: 1
-      Blocks: 3
+      Blocks: 4
       Class: rviz_plugins/AerialMapDisplay
       Draw Behind: false
       Enabled: true

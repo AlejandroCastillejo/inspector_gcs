@@ -14,6 +14,8 @@
 #include <inspector_gcs/MissionService.h>
 #include <inspector_gcs/uavLink.h>
 
+#include <tf2_ros/static_transform_broadcaster.h>
+#include <geometry_msgs/TransformStamped.h>
 
 #include <sensor_msgs/NavSatFix.h>
 
@@ -79,6 +81,8 @@ class GcsServices {
         std::vector<geographic_msgs::GeoPath>* p_missionPathsGeo;
 
         bool mission_created = false;
+
+
 
         // typedef uav_abstraction_layer::State ualState;
 

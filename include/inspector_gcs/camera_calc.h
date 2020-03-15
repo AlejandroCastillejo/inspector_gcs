@@ -1,7 +1,7 @@
 #ifndef CAMERA_CALC_H
 #define CAMERA_CALC_H
 
-#include <json.hpp> // single-include file for json parsing
+#include <nlohmann/json.hpp> // single-include file for json parsing
 #include <fstream>
 #include <iostream>
 
