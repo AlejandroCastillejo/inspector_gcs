@@ -111,7 +111,7 @@ Visualization Manager:
       Shaft Length: 5
       Shaft Radius: 2
       Shape: Arrow
-      Topic: ""
+      Topic: /uav2/ual/pose
       Unreliable: false
       Value: true
   Enabled: true
@@ -146,18 +146,18 @@ Visualization Manager:
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -58.1923485
-        Y: 18.5020008
-        Z: 30.7243214
+        X: -25.559412
+        Y: 140.169128
+        Z: 35.6996689
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.420398295
+      Pitch: 0.375398338
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.44858909
+      Yaw: 2.66358542
     Saved: ~
 Window Geometry:
   Displays:

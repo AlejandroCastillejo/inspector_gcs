@@ -270,10 +270,9 @@ void GcsServices::visualization_thread()
   }
 
   //static transform
-  // tf2_ros::StaticTransformBroadcaster static_broadcaster[n];
-  tf2_ros::StaticTransformBroadcaster static_broadcaster_1;
-  tf2_ros::StaticTransformBroadcaster static_broadcaster_2;
+  tf2_ros::StaticTransformBroadcaster static_broadcaster[n];
   geometry_msgs::TransformStamped static_transform[n];
+  
   for (int i = 0; i < n; i++) {
     static_transform[i].header.stamp = ros::Time::now();
     static_transform[i].header.frame_id = "map";
@@ -285,15 +284,17 @@ void GcsServices::visualization_thread()
     static_transform[i].transform.rotation.y = 0;
     static_transform[i].transform.rotation.z = 0;
     static_transform[i].transform.rotation.w = 1;
-
-    // static_broadcaster[i].sendTransform(static_transform[i]);
   }
-    static_broadcaster_1.sendTransform(static_transform[0]);
-    // static_broadcaster_2.sendTransform(static_transform[1]);
+
 
 
   while (ros::ok())
   {
+    for (int i = 0; i < n; i++) {
+    static_transform[i].header.stamp = ros::Time::now();
+    static_broadcaster[i].sendTransform(static_transform[i]);
+    }
+
     map_origin_pub.publish(map_origin);
 
     visualization_msgs::Marker points[n], line_strip[n];

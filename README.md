@@ -80,6 +80,13 @@ roslaunch inspector_gcs inspector_gcs.launch
 
 <br/>
 
+NOTE: The rviz pluging might not find the defined configuration.  
+In this case go to `File > Open Config`  
+and chose the file:  
+(your catkin_ws)/src/inspector_gcs/rviz/gui_visualization.rviz
+
+<br/>
+
 ## GUI Screenshots
 Once the software is launched you will see the following:  
 <br/>
