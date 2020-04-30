@@ -48,6 +48,13 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
 {
   ROS_INFO("Creating mission");
 
+  // check if there are linked uavs
+  if (uav_list.empty()) {
+    ROS_ERROR("There are not linked UAVs");
+    // res.result = false;
+    return false;
+  }
+
   // clear lists
   h_d.clear();
   resultLinesNED.clear();
@@ -90,6 +97,7 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
   }
   else {
     ROS_ERROR("Can't set base coordinate");
+    res.result = false;
     return false;
   }
 
@@ -165,6 +173,7 @@ bool GcsServices::create_mission_cb(inspector_gcs::gcsCreateMission::Request &re
 
   mission_created = true;
   res.result = true;
+  res.MissionPaths = missionPathsGeo;
   return true;
 }
 

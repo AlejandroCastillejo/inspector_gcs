@@ -1,2 +1,4 @@
 ---
 bool result
+geographic_msgs/GeoPath[] MissionPaths
+int32 h_d
