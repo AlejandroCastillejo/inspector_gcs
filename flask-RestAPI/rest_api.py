@@ -23,7 +23,7 @@ def uav_list_topic():
         response = uav_list.uavs
         print(response)
         return {'uavs': response}
-    except Exception, e:
+    except Exception as e:
         print(e)
         return str(e)
         
@@ -36,7 +36,7 @@ def get_topics_list():
             topics_list.append(topic[0])
         print('topics: ', topics_list)
         return jsonify(topics_list)
-    except Exception, e:
+    except Exception as e:
         print(e)
         return str(e)
 
@@ -49,11 +49,11 @@ def get_topic():
     print ('topic type ', topic_type)
     try:
         type_class = roslib.message.get_message_class(topic_type)
-        print type_class
+        print(type_class)
         message = rospy.wait_for_message(topic_name, type_class, 5)
-        print message
+        print(message)
         return jsonify({'last_message': str(message)})
-    except Exception,e:
+    except Exception as e:
         return str(e)
 
 
@@ -65,7 +65,7 @@ def create_mission_service():
         paths = get_paths_from_ros(resp)
         return {"result": resp.result,
                 "paths": paths}
-    except Exception, e:
+    except Exception as e:
         print(e)
         return str(e)
 
@@ -75,7 +75,7 @@ def send_mission_service():
         send_mission_service = rospy.ServiceProxy('send_mission_service', gcsSendMission)
         resp = send_mission_service()
         return {"result": resp.result}
-    except Exception, e:
+    except Exception as e:
         print(e)
         return str(e)
 
@@ -110,7 +110,7 @@ def call_action_services(request, action_name, service_name, service_class, srv_
         else:
             t_uavs = uavs.split(', ')
         print('t_uavs: ', t_uavs)
-    except Exception, e:
+    except Exception as e:
         print(e)
         return {'result': str(e)}
     uavs_ok = []
@@ -160,7 +160,7 @@ def main():
     while(not rospy.is_shutdown()):
         rospy.init_node('flask')
         print('init flask')
-        app.debug = True
+        app.debug = False
         app.run(host='127.0.0.1', port=7000)
         rospy.spin()
 
@@ -168,5 +168,5 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except rospy.ROSInterruptException, KeyboardInterrupt:
+    except KeyboardInterrupt:
         pass
