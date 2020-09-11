@@ -63,11 +63,13 @@ class RostfulServices:
         return "True"
 
     def start_mission_cb(self, req):
+        print('req: ', req)
         uavs = json.loads(req.uavs)
         if uavs == "all":
             t_uavs = self.uav_list
         else:
             t_uavs = uavs.split(', ')
+        print('uavs: ', t_uavs)
         uavs_ok = []
         uavs_error = []
         for uav in t_uavs:

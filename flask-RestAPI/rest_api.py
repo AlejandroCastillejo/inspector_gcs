@@ -104,6 +104,7 @@ def abort_mission():
 def call_action_services(request, action_name, service_name, service_class, srv_request=None):
     try:
         uavs = request.values.get('uavs')
+        # uavs = request.form.get('uavs')
         print(uavs)
         if uavs == "all":
             t_uavs = uav_list_topic()['uavs']
