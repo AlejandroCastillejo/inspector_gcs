@@ -48,7 +48,7 @@
     "verticality": 3,
     "drift": 3,
     "height variation over terrain": 3,
-    "diferent flight altitudes": "True",
+    "diferent flight altitudes": "False",
     "list of flight altitudes": [31, 42]
   },
   "devices": [

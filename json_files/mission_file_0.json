@@ -1,45 +1,33 @@
 {
-  "plant":"Madrigalejo 1",
+  "plant":"Bollullos",
   "perimeter": [
     {
-      "latitude": 39.165203,
-      "longitude": -5.640041
+      "latitude": 37.356571,
+      "longitude": -6.126776
     },
     {
-      "latitude": 39.165586,
-      "longitude": -5.639086
+      "latitude": 37.357667,
+      "longitude": -6.126677
     },
     {
-      "latitude": 39.165383, 
-      "longitude": -5.638738
+      "latitude": 37.357650,
+      "longitude": -6.125427
     },
     {
-      "latitude": 39.165961,
-      "longitude": -5.637367
-    },
-    {
-      "latitude": 39.164946, 
-      "longitude":  -5.637273
-    },
-    {
-      "latitude": 39.164038,
-      "longitude": -5.639065
-    },
-    {
-      "latitude": 39.164022,
-      "longitude": -5.640034
+      "latitude": 37.356533,
+      "longitude": -6.125368
     }
   ],
   "flight characteristics": {
-	  "take off": {
-        "latitude": 43.520345,
-        "longitude": -5.607823
-      },
-	  "landing": {
-        "latitude": 43.520345,
-        "longitude": -5.607823
-      },
-	  "flight direction": -45,
+	"take off": {
+      "latitude": 43.520345,
+      "longitude": -5.607823
+    },
+	"landing": {
+      "latitude": 43.520345,
+      "longitude": -5.607823
+    },
+	"flight direction": 90,
     "flight altitude": 30,
     "longitudinal overlap (minimum)": 0.6,
     "longitudinal overlap (ideal)": 0.8,
